@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-WebchatAgcApplication<webchat_agc>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.webchat.webchat_agc.WebchatAgcApplication",
+            "projectName": "webchat_agc",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
