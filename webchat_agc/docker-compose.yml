@@ -1,0 +1,10 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - 27017:27017
+    volumes:
+      -mongo:/data
+    environment:
+      - name=value
