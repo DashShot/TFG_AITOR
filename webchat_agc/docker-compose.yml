@@ -18,8 +18,8 @@ services:
     ports:
       - 8081:8081
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=aitor
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=aitor
       - ME_CONFIG_MONGODB_SERVER=mongodb
 
 volumes:
