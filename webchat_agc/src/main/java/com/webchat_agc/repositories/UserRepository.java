@@ -1,4 +1,4 @@
-package com.webchat_agc.services;
+package com.webchat_agc.repositories;
 
 import com.webchat_agc.dto.User;
 import com.webchat_agc.dto.UserStatus;
