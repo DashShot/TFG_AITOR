@@ -25,8 +25,10 @@ public class ChatMessageService {
         repository.save(chatMessage);
     }
 
-    public List<ChatMessage> findChatMessages(ChatRoom chatRoom){
-
-        return repository.findByChatId(chatRoom.getChatID());
+    //REVISAR PARA CHAT ROOM NO ENCONTRADOS
+    public List<ChatMessage> findChatMessagesByID(String chatRoomId){
+        return repository.findByChatId(chatRoomId);
     }
+    
+
 }

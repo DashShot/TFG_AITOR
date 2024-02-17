@@ -1,6 +1,7 @@
 package com.webchat_agc.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,6 @@ public class ChatRoomService {
         repository.save(chatRoom);
     }
 
-    ////////////////////
-
-    //private void createChatRoom() ?
-
-    ///
-
     public void closeChatRoom(ChatRoom chatRoom){
         var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
 
@@ -41,9 +36,8 @@ public class ChatRoomService {
 
     }
 
-
-    ///////////////////////////////////////////////////////
-
-
+    public Optional<ChatRoom> findById(String chatRoomID) {
+        return repository.findById(chatRoomID);
+    }
     
 }
