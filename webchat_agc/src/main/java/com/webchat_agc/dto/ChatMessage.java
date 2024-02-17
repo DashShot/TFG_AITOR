@@ -1,5 +1,6 @@
 package com.webchat_agc.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -17,12 +18,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Document
-public class ChatRoom {
+public class ChatMessage {
+    
     @Id
     private String id;
-    private String chatID;
-    private ChatRoomStatus chatRoomStatus;
+    private String chatRoomId;
 
+    private String content;
+    private Date timestamp;
+    
     //AÑADIR DEPENDENCIAS
-    private List<User> roomUsers;
+    private String senderId;
+
+    private List<User> receivers;
+
+    
+
 }

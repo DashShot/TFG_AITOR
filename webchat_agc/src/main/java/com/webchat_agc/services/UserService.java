@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import com.webchat_agc.dto.User;
 import com.webchat_agc.dto.UserStatus;
+import com.webchat_agc.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

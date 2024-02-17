@@ -14,24 +14,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatRoomService {
     
-    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepository repository;
 
     public void saveChatRoom(ChatRoom chatRoom){
         chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
-        chatRoomRepository.save(chatRoom);
+        repository.save(chatRoom);
     }
-    
+
+    ////////////////////
+
+    //private void createChatRoom() ?
+
+    ///
+
     public void closeChatRoom(ChatRoom chatRoom){
-        var storedChatRoom = chatRoomRepository.findById(chatRoom.getChatID()).orElse(null);
+        var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
 
         if(storedChatRoom != null){
             storedChatRoom.setChatRoomStatus(ChatRoomStatus.UNAVAILABLE);
-            chatRoomRepository.save(storedChatRoom);
+            repository.save(storedChatRoom);
         }
     }
 
     public List<ChatRoom> findOpenedChatRooms(){
-        return chatRoomRepository.findAllByStatus(ChatRoomStatus.AVAILABLE);
+        return repository.findAllByStatus(ChatRoomStatus.AVAILABLE);
 
     }
+
+
+    ///////////////////////////////////////////////////////
+
+
+    
 }
