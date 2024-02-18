@@ -73,19 +73,20 @@ async function findAndDisplayConnectedUsers() {
 async function findAndDisplayConnectedRooms() {
 
     const aviableRoomResponse = await fetch('/rooms');
-    let connectedUsers = await connectedUsersResponse.json();
+    let availableRooms = await aviableRoomResponse.json();
 
-    connectedUsers = connectedUsers.filter(user => user.nickName !== nickname);
+    availableRooms = availableRooms.filter(room => room.chatRoomStatus !== UNAVIALABLE);
     
-    const connectedUsersList = document.getElementById('connectedUsers');
-    connectedUsersList.innerHTML = '';
+    const availableRoomsList = document.getElementById('availableRooms');
 
-    connectedUsers.forEach(user => {
-        appendUserElement(user, connectedUsersList);
-        if (connectedUsers.indexOf(user) < connectedUsers.length - 1) {
+    availableRoomsList.innerHTML = '';
+
+    availableRoomsList.forEach(room => {
+        appendUserElement(room, availableRooms);
+        if (availableRooms.indexOf(room) < availableRooms.length - 1) {
             const separator = document.createElement('li');
             separator.classList.add('separator');
-            connectedUsersList.appendChild(separator);
+            availableRoomsList.appendChild(separator);
         }
     });
 }

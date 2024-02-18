@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.webchat_agc.dto.ChatRoom;
 import com.webchat_agc.dto.ChatRoomStatus;
@@ -31,7 +32,8 @@ public class ChatRoomService {
         }
     }
 
-    public List<ChatRoom> findOpenedChatRooms(){
+    @GetMapping("/rooms")
+    public List<ChatRoom> findAvailableChatRooms(){
         return repository.findAllByStatus(ChatRoomStatus.AVAILABLE);
 
     }
