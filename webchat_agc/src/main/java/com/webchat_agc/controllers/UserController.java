@@ -1,7 +1,9 @@
+
 package com.webchat_agc.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -19,7 +21,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class UserController {
 
+    @Autowired
     private final UserService service;
+
+
+//-----------------
+ 
+//IGUAL PARA ROOMS
+
+    @GetMapping("/Users")
+    public ResponseEntity<List<User>> findConnectedUsers(){
+        return ResponseEntity.ok(service.findConnectedUsers());
+    }
+
+
+
+//--------------------- WEB SOCKET WHIT STOMP ------------------------
 
     @MessageMapping("/user.addUser")
     @SendTo("/user/room")
@@ -35,11 +52,5 @@ public class UserController {
         return user;
     }
     
-    //IGUAL PARA ROOMS
-
-    @GetMapping("/Users")
-    public ResponseEntity<List<User>> findConnectedUsers(){
-        return ResponseEntity.ok(service.findConnectedUsers());
-    }
     
 }
