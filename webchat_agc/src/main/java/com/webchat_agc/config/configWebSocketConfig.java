@@ -20,14 +20,18 @@ public class configWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/user");
+        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
+
+
         registry.setUserDestinationPrefix("/room");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/chatSocket")
+                .setAllowedOriginPatterns("/http://localhost:4200")//CLiente Angular
+                .withSockJS();
     }
 
     @Override

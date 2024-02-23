@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,18 +22,16 @@ import lombok.Setter;
 @Document
 public class ChatMessage {
     
-    @Id
-    private String id;
-    private String chatRoomId;
+    @Id 
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
 
     private String content;
     private Date timestamp;
     
     //AÑADIR DEPENDENCIAS
-    private String senderId;
-
+    private User sender;
     private List<User> receivers;
-
-    
+    private ChatRoom chatRoom;    
 
 }

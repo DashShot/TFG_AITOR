@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.webchat_agc.dto.ChatMessage;
+import com.webchat_agc.dto.ChatRoom;
 import com.webchat_agc.dto.User;
 import com.webchat_agc.dto.UserStatus;
 import com.webchat_agc.services.UserService;
@@ -21,6 +26,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class WebController {
     
+
+    @MessageMapping("/chat/{chatRoomId}")
+    @SendTo("/topic/{chatRoomId}")
+    public ChatMessage chatMessage(@DestinationVariable String chaRoomID, ChatMessage chatMessage, ChatRoom chatRoom){
+        return new ChatMessage(chatMessage.getMessage);
+    }
+
+
+
+
+
+    //QUITAR NO QUIERO API-REST
     private  UserService userService;
 
     private  PasswordEncoder passwordEncoder;

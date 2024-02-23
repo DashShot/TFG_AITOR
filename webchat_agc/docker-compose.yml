@@ -24,3 +24,5 @@ services:
 
 volumes:
     mongo: {}
+
+#Instalar seguiramente librerias stomp TMB @stomp/stompjs y sockjs-client

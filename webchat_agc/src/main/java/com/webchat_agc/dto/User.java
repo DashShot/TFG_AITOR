@@ -15,7 +15,6 @@ import lombok.Setter;
 @Document
 public class User {
 
-   
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
