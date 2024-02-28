@@ -1,111 +1,81 @@
 package com.webchat_agc.controllers;
 
-import java.security.Principal;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
 
 import com.webchat_agc.dto.ChatMessage;
 import com.webchat_agc.dto.ChatRoom;
-import com.webchat_agc.dto.User;
-import com.webchat_agc.dto.UserStatus;
-import com.webchat_agc.services.UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class WebController {
     
+    @MessageMapping("/login")
+    @SendTo("/topic/response")
+    public String login(String message) {
+        // Handle the login message here
+        // Return a response message to be sent to the client
+        return new String("Login successful");
+    }
+
+    @MessageMapping("/register")
+    @SendTo("/topic/response")
+    public String register(String message) {
+        // Handle the registration message here
+        // Return a response message to be sent to the client
+        return new String("Registration successful");
+    }
+
+    @MessageMapping("/disconnect")
+    @SendTo("/topic/response")
+    public String disconnect(String message) {
+        // Handle the registration message here
+        // Return a response message to be sent to the client
+        return new String("Disconnected");
+    }
+
+    @MessageMapping("/rooms")
+    @SendTo("/topic/rooms")
+    public String roomsDisplay(){
+        //return new ChatMessage(chatMessage);
+        return new String("1");
+    }
+
 
     @MessageMapping("/chat/{chatRoomId}")
     @SendTo("/topic/{chatRoomId}")
     public ChatMessage chatMessage(@DestinationVariable String chaRoomID, ChatMessage chatMessage, ChatRoom chatRoom){
-        return new ChatMessage(chatMessage.getMessage);
+        //return new ChatMessage(chatMessage);
+        return chatMessage;
     }
 
+    // @GetMapping("/chat/{roomID}")
+    // public ResponseEntity<List<ChatMessage>> findChatMessages(@PathVariable("roomID") String roomID){
+    //     return ResponseEntity.ok(chatMessageService.findChatMessagesByID(roomID));
+    // }
+
+    // //Mejorar Soprte opcional
+    // @MessageMapping("/chat")
+    // public void processMessage(@Payload ChatMessage chatMessage, @Payload String chatRoomID){
+
+    //     ChatRoom chatRoom = chatRoomService.findById(chatRoomID).orElse(null);
+    //     if(chatRoom == null){
+    //         //LANZAR EXCEP mensje No procesado
+
+    //     }else{
+    //         chatMessageService.save(chatMessage, chatRoom);
+    //         //  /user/queue/messages
+    //         messagingTemplate.convertAndSendToUser(chatMessage.getSenderId()
+    //                                                 ,"/queue/messages"
+    //                                                 ,ChatNotification.builder().id(chatMessage.getId())
+    //                                                                             .senderId(chatMessage.getSenderId())
+    //                                                                             .roomId(chatRoomID)
+    //                                                                             .content(chatMessage.getContent()));
+
+    //     }
+    // }
 
 
-
-
-    //QUITAR NO QUIERO API-REST
-    private  UserService userService;
-
-    private  PasswordEncoder passwordEncoder;
-
-    @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request) {
-
-        Principal principal = request.getUserPrincipal();
-
-        if (principal != null) {
-
-            model.addAttribute("sesionIniciada", true);
-            model.addAttribute("userName", principal.getName());
-            model.addAttribute("admin", request.isUserInRole("ADMIN"));
-
-        } else {
-            model.addAttribute("sesionIniciada", false);
-            model.addAttribute("userName", "Invitado");
-            model.addAttribute("admin", request.isUserInRole("ADMIN"));
-        }
-
-    }
-
-    // --------------- Pantalla inicial ----------------------------------//
-
-    @GetMapping("/")
-    public String inicio() {
-
-
-        return "inicio";
-    }
-
-    // ------------------------ Login ----------------------------------------//
-    
-    @RequestMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-
-    @RequestMapping("/loginerror")
-    public String loginerror() {
-        return "loginerror";
-    }
-
-    //----------------------- Logout --------------------------------------//
-
-    @RequestMapping("/logout")
-    public String logout(){
-        return "logout";
-    }
-    // ------------------ Registro -------------------------------------//
-
-    @GetMapping("/registro")
-    public String registro() {
-        return "registro";
-    }
-
-    @PostMapping("/registro")
-	public String registrar(@RequestParam String nickName, @RequestParam String password) {
-
-		if (userService.getByNickname(nickName) != null || nickName == "" || password == ""){
-            return "registroerror";
-        }else{
-            User u = new User(nickName,passwordEncoder.encode(password),("USER"));
-		    userService.saveUser(u);
-		    return "registroexito";
-        }
-        
-	}
 }
+

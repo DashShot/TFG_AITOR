@@ -17,34 +17,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository repository;
+    // private final UserRepository repository;
 
-    @MessageMapping("/user.addUser")
-    @SendTo("/user/topic")
-    public void saveUser(User user){
-        user.setStatus(UserStatus.ONLINE);
-        repository.save(user);
-    }
+    // @MessageMapping("/user.addUser")
+    // @SendTo("/user/topic")
+    // public void saveUser(User user){
+    //     user.setStatus(UserStatus.ONLINE);
+    //     repository.save(user);
+    // }
 
-    @MessageMapping("/user.disconnectUser")
-    @SendTo("/user/topic")
-    public void disconnect(User user){
-        var storedUser = repository.findById(user.getId()).orElse(null);
+    // @MessageMapping("/user.disconnectUser")
+    // @SendTo("/user/topic")
+    // public void disconnect(User user){
+    //     var storedUser = repository.findById(user.getId()).orElse(null);
         
-        if(storedUser != null){
-            storedUser.setStatus(UserStatus.OFFLINE);
-            repository.save(storedUser);
-        }
-    }
+    //     if(storedUser != null){
+    //         storedUser.setStatus(UserStatus.OFFLINE);
+    //         repository.save(storedUser);
+    //     }
+    // }
 
-    @GetMapping("/users")
-    public List<User> findConnectedUsers(){
-        return repository.findAllByStatus(UserStatus.ONLINE);
-    }
+    // @GetMapping("/users")
+    // public List<User> findConnectedUsers(){
+    //     return repository.findAllByStatus(UserStatus.ONLINE);
+    // }
 
-    public User getByNickname(String nickName) {
-            return repository.getByNickname(nickName);
-    }
+    // public User getByNickname(String nickName) {
+    //         return repository.getByNickname(nickName);
+    // }
 
     
 }

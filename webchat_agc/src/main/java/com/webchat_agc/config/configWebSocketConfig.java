@@ -24,13 +24,13 @@ public class configWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app");
 
 
-        registry.setUserDestinationPrefix("/room");
+        //registry.setUserDestinationPrefix("/room");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chatSocket")
-                .setAllowedOriginPatterns("/http://localhost:4200")//CLiente Angular
+                .setAllowedOriginPatterns("http://localhost:4200/")//CLiente Angular
                 .withSockJS();
     }
 
@@ -48,7 +48,5 @@ public class configWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         return false;
     }
-
-
     
 }

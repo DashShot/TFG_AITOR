@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { ChatMessage } from '../models/chat-message';
+import { AuthMessage } from '../models/auth-message';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,29 @@ export class WebSocketService {
   }
 
   initConnectionSocket(){
-    const url = "//localhost:8081/ws"
-    const socket = new SockJS(url)
-    this.stompClient = Stomp.over(socket);
+    // var url = "http://localhost:8080/chatSocket";
+    // const socket = new SockJS(url);
+    // this.stompClient = Stomp.over(socket);
+
+    var client = Stomp.over(function(){
+      return new WebSocket('ws://localhost:8080/chatSocket')
+    });
+
+  }
+
+  loginService(loginMessage: AuthMessage): string{
+    let responseMessage: string = '';
+    this.stompClient.send(`/app/login`,{}, JSON.stringify(loginMessage));
+     this.stompClient.subscribe('/topic/response', (message: any) => {
+       console.log(message.body);
+       message.body = message.body.toString();
+       responseMessage = message.body.toString();
+     });
+    return responseMessage;
+  }
+
+  registryService(registerMessage: AuthMessage){
+    this.stompClient.send(`/app/register`,{}, JSON.stringify(registerMessage));
   }
 
   joinRoom(roomId: string){

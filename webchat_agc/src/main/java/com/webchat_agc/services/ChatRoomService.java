@@ -16,30 +16,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatRoomService {
     
-    private final ChatRoomRepository repository;
+    // private final ChatRoomRepository repository;
 
-    public void saveChatRoom(ChatRoom chatRoom){
-        chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
-        repository.save(chatRoom);
-    }
+    // public void saveChatRoom(ChatRoom chatRoom){
+    //     chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
+    //     repository.save(chatRoom);
+    // }
 
-    public void closeChatRoom(ChatRoom chatRoom){
-        var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
+    // public void closeChatRoom(ChatRoom chatRoom){
+    //     var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
 
-        if(storedChatRoom != null){
-            storedChatRoom.setChatRoomStatus(ChatRoomStatus.UNAVAILABLE);
-            repository.save(storedChatRoom);
-        }
-    }
+    //     if(storedChatRoom != null){
+    //         storedChatRoom.setChatRoomStatus(ChatRoomStatus.UNAVAILABLE);
+    //         repository.save(storedChatRoom);
+    //     }
+    // }
 
-    @GetMapping("/rooms")
-    public List<ChatRoom> findAvailableChatRooms(){
-        return repository.findAllByStatus(ChatRoomStatus.AVAILABLE);
+    // @GetMapping("/rooms")
+    // public List<ChatRoom> findAvailableChatRooms(){
+    //     return repository.findAllByStatus(ChatRoomStatus.AVAILABLE);
 
-    }
+    // }
 
-    public Optional<ChatRoom> findById(String chatRoomID) {
-        return repository.findById(chatRoomID);
-    }
+    // public Optional<ChatRoom> findById(String chatRoomID) {
+    //     return repository.findById(chatRoomID);
+    // }
     
 }
