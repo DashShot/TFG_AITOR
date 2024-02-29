@@ -3,6 +3,8 @@ package com.webchat_agc.controllers;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import com.webchat_agc.dto.ChatMessage;
@@ -10,14 +12,24 @@ import com.webchat_agc.dto.ChatRoom;
 
 @Controller
 public class WebController {
-    
-    @MessageMapping("/login")
-    @SendTo("/topic/response")
-    public String login(String message) {
-        // Handle the login message here
-        // Return a response message to be sent to the client
-        return new String("Login successful");
+    private final SimpMessageSendingOperations messaging;
+
+    public WebController(SimpMessageSendingOperations messaging) {
+        this.messaging = messaging;
     }
+
+    
+    
+    @MessageMapping("/app/login")
+    @SendTo("/topic/response")
+    public void login(String message, SimpMessageHeaderAccessor headerAccessor) {
+        // Handle the login message here
+        String response = "Login successful";
+        // Return a response message to the client
+        headerAccessor.getSessionAttributes().put("response", response);
+        //this.messaging.convertAndSend("/topic/response", response);
+    }
+        
 
     @MessageMapping("/register")
     @SendTo("/topic/response")
