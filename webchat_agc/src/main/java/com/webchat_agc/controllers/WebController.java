@@ -2,31 +2,33 @@ package com.webchat_agc.controllers;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.webchat_agc.dto.ChatMessage;
 import com.webchat_agc.dto.ChatRoom;
+import com.webchat_agc.dto.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class WebController {
-    private final SimpMessageSendingOperations messaging;
-
-    public WebController(SimpMessageSendingOperations messaging) {
-        this.messaging = messaging;
-    }
-
     
+    private final SimpMessagingTemplate messageTemplate;
     
-    @MessageMapping("/app/login")
-    @SendTo("/topic/response")
-    public void login(String message, SimpMessageHeaderAccessor headerAccessor) {
+    @MessageMapping("/auth/login")
+    public void login(@Payload User user) {
+        System.out.println("PRUEBA-------------------");
+        System.out.println(user.toString());
         // Handle the login message here
         String response = "Login successful";
+        this.messageTemplate.convertAndSend("/topic/auth/response", response);
+        System.out.println("Message sent to /topic/auth/response");
+
         // Return a response message to the client
-        headerAccessor.getSessionAttributes().put("response", response);
         //this.messaging.convertAndSend("/topic/response", response);
     }
         

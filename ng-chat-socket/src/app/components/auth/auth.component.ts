@@ -29,7 +29,10 @@ export class AuthComponent {
 
     login() {
       //const loginMessage: AuthMessage = {username: this.loginUsername, password: this.loginPassword};
-      //this.loginResponse = this.webSocketService.loginService(loginMessage);
+      const loginMessage: AuthMessage = {username: "prueba", password: "prueba"};
+      console.log("loginMessage");
+      this.loginResponse = this.webSocketService.loginService(loginMessage);
+
       this.loginResponse2 = 'patata';
     }
   

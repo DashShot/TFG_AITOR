@@ -20,23 +20,23 @@ public class configWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        
         registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
-
 
         //registry.setUserDestinationPrefix("/room");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chatSocket")
+        registry.addEndpoint("/socket")
                 .setAllowedOriginPatterns("http://localhost:4200/")//CLiente Angular
                 .withSockJS();
     }
 
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-        
+        //JSON CONVERT
         DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
         resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
 

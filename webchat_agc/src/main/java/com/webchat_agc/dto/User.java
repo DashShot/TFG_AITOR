@@ -19,13 +19,13 @@ public class User {
     private String nickName;
     private String password;
 
-    private List<String> roles = null;
-    private UserStatus status;
+    // private List<String> roles = null;
+    // private UserStatus status;
 
-    public User(String nickName, String password, String rol) {
-        this.nickName = nickName;
-        this.password = password;
-        this.roles.add(rol);
-    }
+    // public User(String nickName, String password, String rol) {
+    //     this.nickName = nickName;
+    //     this.password = password;
+    //     this.roles.add(rol);
+    // }
 
 }
