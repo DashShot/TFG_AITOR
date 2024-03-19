@@ -10,7 +10,7 @@ import com.webchat_agc.dto.ChatRoomStatus;
 
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, Long>{
 
-    List<ChatRoom> findAllByStatus(ChatRoomStatus available);
+   // List<ChatRoom> findAllByStatus(ChatRoomStatus available);
     
     
 }

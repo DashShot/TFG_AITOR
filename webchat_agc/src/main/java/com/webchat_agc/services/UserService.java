@@ -1,14 +1,15 @@
 package com.webchat_agc.services;
 
-import java.util.List;
+//import java.util.List;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.messaging.handler.annotation.MessageMapping;
+//import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.GetMapping;
 
 import com.webchat_agc.dto.User;
-import com.webchat_agc.dto.UserStatus;
+//import com.webchat_agc.dto.UserStatus;
 import com.webchat_agc.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-    // private final UserRepository repository;
+    @Autowired
+    private final UserRepository repository;
+    
+    public User getByUsername(String username) {
+            return repository.getByUsername(username);
+    }
 
     // @MessageMapping("/user.addUser")
     // @SendTo("/user/topic")

@@ -1,5 +1,6 @@
 package com.webchat_agc.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -7,9 +8,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import com.webchat_agc.dto.AuthMessage;
 import com.webchat_agc.dto.ChatMessage;
 import com.webchat_agc.dto.ChatRoom;
 import com.webchat_agc.dto.User;
+import com.webchat_agc.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,14 +21,30 @@ import lombok.RequiredArgsConstructor;
 public class WebController {
     
     private final SimpMessagingTemplate messageTemplate;
+
+    @Autowired
+    private final UserService userService;
+    
+
     
     @MessageMapping("/auth/login")
-    public void login(@Payload User user) {
+    public void login(@Payload AuthMessage auth ) {
         System.out.println("PRUEBA-------------------");
-        System.out.println(user.toString());
-        // Handle the login message here
-        String response = "Login successful";
-        this.messageTemplate.convertAndSend("/topic/auth/response", response);
+        System.out.println(auth.getUsername());
+
+        String response = "";
+        User UserAux = this.userService.getByUsername(auth.getUsername());
+        System.out.println("PRUEBA-------------------2");
+        if (UserAux == null){
+            // Handle the login message here
+            response = "User not found";
+            this.messageTemplate.convertAndSend("/topic/auth/response", response);
+            
+        }else{
+            response = "User found";
+            this.messageTemplate.convertAndSend("/topic/auth/response", response);
+        }
+        
         System.out.println("Message sent to /topic/auth/response");
 
         // Return a response message to the client

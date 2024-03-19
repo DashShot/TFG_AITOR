@@ -8,5 +8,5 @@ import com.webchat_agc.dto.ChatMessage;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, Long> {
     
-    public List<ChatMessage> findByChatId(String id);
+   // public List<ChatMessage> findByChatId(String id);
 }

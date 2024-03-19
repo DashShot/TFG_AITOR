@@ -1,0 +1,8 @@
+h1{
+    font-size: system-ui;
+}
+img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}

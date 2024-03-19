@@ -10,20 +10,26 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document
+@Document("User")
 public class User {
 
+    //@Id
+    //private String id;
     @Id
-    private long Id;
-
-    private String nickName;
+    private String username;
     private String password;
+    
+    
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    
     // private List<String> roles = null;
-    // private UserStatus status;
 
-    // public User(String nickName, String password, String rol) {
-    //     this.nickName = nickName;
+    // public User(String username, String password, String rol) {
+    //     this.username = username;
     //     this.password = password;
     //     this.roles.add(rol);
     // }

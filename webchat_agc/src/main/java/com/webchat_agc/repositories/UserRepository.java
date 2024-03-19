@@ -6,11 +6,13 @@ import com.webchat_agc.dto.UserStatus;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
  
-public interface UserRepository extends MongoRepository<User, Long>{
+@Repository
+public interface UserRepository extends MongoRepository<User, String>{
 
-    List<User> findAllByStatus(UserStatus online);
+    User getByUsername(String username);
 
-    User getByNickname(String nickName);
-
+    //List<User> findAllByStatus(UserStatus online);
 }

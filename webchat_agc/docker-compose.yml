@@ -1,30 +1,33 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  mongodb:
-    image: mongo
-    container_name: mongo_db
-    ports:
-      - 27017:27017
-    volumes:
-      - mongo:/data
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=aitor
-      - MONGO_INITDB_ROOT_PASSWORD=aitor
-
+        - MONGO_INITDB_ROOT_USERNAME=root
+        - MONGO_INITDB_ROOT_PASSWORD=password
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./database/db:/data/db
+      - ./database/dev.archive:/Databases/dev.archive
+      - ./database/production:/Databases/production
   mongo-express:
     image: mongo-express
-    container_name: mongo_express
-    restart: always
-    ports:
-      - 8081:8081
+    container_name: mexpress
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=aitor
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=aitor
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_URL=mongodb://aitor:aitor@mongodb:27017/chat_app?authSource=admin
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo:27017/?authSource=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+      - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+    links:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
 
-volumes:
-  mongo: {}
 
 #Instalar seguiramente librerias stomp TMB @stomp/stompjs y sockjs-client  // npm install --save @types/sockjs-client
