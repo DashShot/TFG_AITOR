@@ -34,7 +34,7 @@ export class WebSocketService {
   }
 
   loginService(loginMessage: AuthMessage): Promise<string> {
-    const responseMessagePromise = new Promise<string>( (resolve, reject) => {
+    return new Promise<string>( (resolve, reject) => {
       this.stompClient.send('/app/auth/login', {}, JSON.stringify(loginMessage));
       console.log("Mensaje enviado");
   
@@ -49,9 +49,36 @@ export class WebSocketService {
         reject(error); // Reject the promise with an error
       });
     });
-    return responseMessagePromise;
   }
   
+  listRooms(): Promise<Array<string>> {
+    return new Promise<Array<string>>((resolve, reject) => {
+      this.stompClient.send('/app/listRooms', {}, '{}');
+      this.stompClient.subscribe('/topic/listRooms', (messages: any) => {
+        try {
+          console.log("Rooms Recibidas");
+          console.log(messages);
+
+          const messageString = new TextDecoder().decode(messages._binaryBody);
+          console.log(messageString)
+
+          // Parse the JSON string as a JavaScript object
+          const roomsList = JSON.parse(messageString);
+          console.log(roomsList);
+
+          // Ensure roomsList is an array of strings
+          if (!Array.isArray(roomsList) || !roomsList.every((room) => typeof room === 'string')) {
+            throw new Error('Received data is not a valid string array');
+          }
+          resolve(roomsList); // Resolve the promise with the array of rooms
+        } catch (error) {
+          reject(error); // Reject the promise if parsing or validation fails
+        }
+      }, (error: Error) => {
+        reject(error); // Reject the promise if subscription fails
+      });
+    });
+  }
 }
 
 export function mySocketFactory() {

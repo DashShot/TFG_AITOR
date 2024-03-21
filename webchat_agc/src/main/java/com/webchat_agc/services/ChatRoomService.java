@@ -3,6 +3,7 @@ package com.webchat_agc.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -16,12 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatRoomService {
     
-    // private final ChatRoomRepository repository;
+    @Autowired
+    private final ChatRoomRepository repository;
 
-    // public void saveChatRoom(ChatRoom chatRoom){
-    //     chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
-    //     repository.save(chatRoom);
-    // }
+    public void saveChatRoom(ChatRoom chatRoom){
+        //chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
+        repository.save(chatRoom);
+    }
 
     // public void closeChatRoom(ChatRoom chatRoom){
     //     var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
@@ -32,14 +34,12 @@ public class ChatRoomService {
     //     }
     // }
 
-    // @GetMapping("/rooms")
-    // public List<ChatRoom> findAvailableChatRooms(){
-    //     return repository.findAllByStatus(ChatRoomStatus.AVAILABLE);
-
-    // }
-
-    // public Optional<ChatRoom> findById(String chatRoomID) {
-    //     return repository.findById(chatRoomID);
-    // }
     
+    public Optional<ChatRoom> findById(String chatRoomID) {
+        return repository.findById(chatRoomID);
+    }
+    
+    public  List<ChatRoom> getAll(){
+        return repository.findAll();
+    }
 }

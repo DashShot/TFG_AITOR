@@ -1,1 +1,6 @@
 <p>rooms works!</p>
+<button type="button" (click)="listRooms()">listRooms</button>
+
+@for (room of rooms; track $index) {
+    <li>{{room}}</li>
+}

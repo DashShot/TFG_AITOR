@@ -1,5 +1,8 @@
 package com.webchat_agc.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,6 +15,8 @@ import com.webchat_agc.dto.AuthMessage;
 import com.webchat_agc.dto.ChatMessage;
 import com.webchat_agc.dto.ChatRoom;
 import com.webchat_agc.dto.User;
+import com.webchat_agc.services.ChatMessageService;
+import com.webchat_agc.services.ChatRoomService;
 import com.webchat_agc.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +30,8 @@ public class WebController {
     @Autowired
     private final UserService userService;
     
+    @Autowired
+    private final ChatRoomService roomService;
 
     
     @MessageMapping("/auth/login")
@@ -47,68 +54,19 @@ public class WebController {
         
         System.out.println("Message sent to /topic/auth/response");
 
-        // Return a response message to the client
-        //this.messaging.convertAndSend("/topic/response", response);
+
     }
         
+    @MessageMapping("/listRooms")
+    public void  listRooms() throws Exception {
+        List<String> roomsList = new ArrayList<>();
+        for  (ChatRoom room : this.roomService.getAll()){
+                roomsList.add(""+room.getChatID()+": "+room.getChatRoomStatus());
+        }
+        System.out.println(roomsList);
 
-    @MessageMapping("/register")
-    @SendTo("/topic/response")
-    public String register(String message) {
-        // Handle the registration message here
-        // Return a response message to be sent to the client
-        return new String("Registration successful");
+        this.messageTemplate.convertAndSend("/topic/listRooms",roomsList);
+        System.out.println("Message sent to /topic/listRooms");
     }
-
-    @MessageMapping("/disconnect")
-    @SendTo("/topic/response")
-    public String disconnect(String message) {
-        // Handle the registration message here
-        // Return a response message to be sent to the client
-        return new String("Disconnected");
-    }
-
-    @MessageMapping("/rooms")
-    @SendTo("/topic/rooms")
-    public String roomsDisplay(){
-        //return new ChatMessage(chatMessage);
-        return new String("1");
-    }
-
-
-    @MessageMapping("/chat/{chatRoomId}")
-    @SendTo("/topic/{chatRoomId}")
-    public ChatMessage chatMessage(@DestinationVariable String chaRoomID, ChatMessage chatMessage, ChatRoom chatRoom){
-        //return new ChatMessage(chatMessage);
-        return chatMessage;
-    }
-
-    // @GetMapping("/chat/{roomID}")
-    // public ResponseEntity<List<ChatMessage>> findChatMessages(@PathVariable("roomID") String roomID){
-    //     return ResponseEntity.ok(chatMessageService.findChatMessagesByID(roomID));
-    // }
-
-    // //Mejorar Soprte opcional
-    // @MessageMapping("/chat")
-    // public void processMessage(@Payload ChatMessage chatMessage, @Payload String chatRoomID){
-
-    //     ChatRoom chatRoom = chatRoomService.findById(chatRoomID).orElse(null);
-    //     if(chatRoom == null){
-    //         //LANZAR EXCEP mensje No procesado
-
-    //     }else{
-    //         chatMessageService.save(chatMessage, chatRoom);
-    //         //  /user/queue/messages
-    //         messagingTemplate.convertAndSendToUser(chatMessage.getSenderId()
-    //                                                 ,"/queue/messages"
-    //                                                 ,ChatNotification.builder().id(chatMessage.getId())
-    //                                                                             .senderId(chatMessage.getSenderId())
-    //                                                                             .roomId(chatRoomID)
-    //                                                                             .content(chatMessage.getContent()));
-
-    //     }
-    // }
-
-
 }
 

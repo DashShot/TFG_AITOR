@@ -18,14 +18,20 @@ import lombok.Setter;
 @Builder
 @Document
 public class ChatRoom {
+    
     @Id
-    private long Id;
-
     private String chatID;
+
     private ChatRoomStatus chatRoomStatus;
 
     //AÑADIR DEPENDENCIAS
     private List<User> roomUsers;
     private List<ChatMessage> chatMessages;
     
+    public ChatRoom(String chatID, ChatRoomStatus status){
+        this.chatID  = chatID;
+        this.chatRoomStatus = status;
+        roomUsers = null;
+        chatMessages = null;
+    }
 }
