@@ -1,35 +1,44 @@
 package com.webchat_agc.dto;
 
 import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Document
 public class ChatMessage {
     
     @Id
-    private long Id;
+    private String id;
 
     private String content;
     private Date timestamp;
     
     //AÑADIR DEPENDENCIAS
+    @DocumentReference
     private User sender;
-    private List<User> receivers;
-    private ChatRoom chatRoom;    
+
+    @DocumentReference
+    private Room room;    
+
+    public ChatMessage(String content, Date timestamp, User sender, Room room){
+        this.id = generateRandomId();
+        this.content = content;
+        this.timestamp= timestamp;
+        this.sender = sender;
+        this.room = room;        
+    }
+    
+    private String generateRandomId() {
+        return UUID.randomUUID().toString();
+    }
 
 }

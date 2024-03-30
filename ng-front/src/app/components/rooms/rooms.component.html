@@ -2,5 +2,8 @@
 <button type="button" (click)="listRooms()">listRooms</button>
 
 @for (room of rooms; track $index) {
-    <li>{{room}}</li>
+    <button type="button" [routerLink]="['/room', room.room]">
+        {{ room.room }}: {{ room.status}}
+      </button>
 }
+

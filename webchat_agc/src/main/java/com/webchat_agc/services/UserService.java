@@ -25,6 +25,10 @@ public class UserService {
             return repository.getByUsername(username);
     }
 
+    public void saveUser(User user){
+        repository.save(user);
+    }
+
     // @MessageMapping("/user.addUser")
     // @SendTo("/user/topic")
     // public void saveUser(User user){

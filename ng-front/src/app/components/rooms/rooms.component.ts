@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 
 import { WebSocketService } from '../../services/web-socket.service';
-import { error } from 'console';
+import { RouterLink } from '@angular/router';
+import { RoomsMessage } from '../../message-models/rooms-message';
+
 @Component({
   selector: 'app-rooms',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './rooms.component.html',
   styleUrl: './rooms.component.css'
 })
 export class RoomsComponent {
 
-  rooms:Array<string> = [];
+  rooms:Array<RoomsMessage> = [];
 
   constructor(private webSocketService: WebSocketService){
   }
@@ -19,12 +21,18 @@ export class RoomsComponent {
   listRooms(){
     this.webSocketService.listRooms()
       .then(roomsList => {
-        console.log("Rooms recividas: ",roomsList)
-        this.rooms= roomsList
+
+        console.log("Rooms recividasComponent: ",roomsList)
+
+        this.rooms = roomsList.map(message => {
+          const [room, status] = message.split(": ");
+          return { room, status };
+        });
+        
       })
       .catch(error =>{
         console.error('Error al obtener las rooms');
       })
-      
   }
+  
 }
