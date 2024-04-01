@@ -31,7 +31,7 @@ export class RoomComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.currentRoom = params.get('room') // room ID 
     });
-    this.listenerMessages();
+  //  this.listenerMessages();
   }
 
   getMessages(){
@@ -45,33 +45,33 @@ export class RoomComponent implements OnInit {
       })
   }
 
-  sendMessage(){
-    var username = this.applyForm.value.username ?? '';
-    var content = this.applyForm.value.content ?? '';
+  // sendMessage(){
+  //   var username = this.applyForm.value.username ?? '';
+  //   var content = this.applyForm.value.content ?? '';
 
-    const message: ChatMessage = {content: content, username: username, room: this.currentRoom || ''}
-    console.log("Mandando mensaje...")
-    this.webSocketService.sendMessage(message)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.error("Error en el envio:", error);
-          // Handle any errors during login
-        });
+  //   const message: ChatMessage = {content: content, username: username, room: this.currentRoom || ''}
+  //   console.log("Mandando mensaje...")
+  //   this.webSocketService.sendMessage(message)
+  //       .then(response => {
+  //         console.log(response)
+  //       })
+  //       .catch(error => {
+  //         console.error("Error en el envio:", error);
+  //         // Handle any errors during login
+  //       });
   }
 
   
-  @ViewChild('messageArea') messageAreaRef!: ElementRef<any>
-  listenerMessages() {
-    this.webSocketService.getMessageSubject().subscribe((messages: any) =>
-      this.messagesSesion = messages.map((item: any) => ({
-        ...item,
-        //lado
-        //
-        //
-      }))
-      );
+  // @ViewChild('messageArea') messageAreaRef!: ElementRef<any>
+  // listenerMessages() {
+  //   this.webSocketService.getMessageSubject().subscribe((messages: any) =>
+  //     this.messagesSesion = messages.map((item: any) => ({
+  //       ...item,
+  //       //lado
+  //       //
+  //       //
+  //     }))
+  //     );
 
     
     //const message = JSON.parse(payload.body);
@@ -104,6 +104,6 @@ export class RoomComponent implements OnInit {
     // // Access the messageArea element using @ViewChild
     // this.messageAreaRef.nativeElement.appendChild(messageElement);
     // this.messageAreaRef.nativeElement.scrollTop = this.messageAreaRef.nativeElement.scrollHeight;
-  }
+//   }
 
-}
+// }

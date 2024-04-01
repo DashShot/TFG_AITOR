@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+
+
+import { Client } from '@stomp/stompjs';
+
+
 import { AuthMessage } from  '../message-models/auth-message';
 import { ChatMessage } from '../message-models/chat-message';
-import { BehaviorSubject } from 'rxjs';
+import SockJS from 'sockjs-client';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,77 +15,101 @@ import { BehaviorSubject } from 'rxjs';
 
 export class WebSocketService {
   
-  private stompClient: any 
-  private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
+  private stompClient: Client | undefined = undefined; 
+
+
+ // private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
 
   constructor() { 
     this.initConnectionSocket();
+    
   }
 
-  initConnectionSocket(){
-    
-    // var url = 'http://localhost:8080/socket';
-    //const socket = new SockJS(url); //factory
-    //this.stompClient = Stomp.over(socket);
-    
-    this.stompClient = Stomp.over(mySocketFactory);
+   initConnectionSocket(){
+    console.log("Creando Cliente.....")
 
-    this.stompClient.connect({}, () => {
-      console.log('Connected to WebSocket endpoint!');
-      // Connection established, handle subscriptions or message sending here
-    }, (error: Error) => {
-      console.error('WebSocket connection error:', error);
-      // Handle connection errors gracefully
+    this.stompClient = new Client({
+      webSocketFactory: mySocketFactory,
+      debug: function (str) {
+        console.log(str);
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
     });
+    this.stompClient.onConnect = function (){
+      console.log("CLIENTE CREADOO")
+    }
+    if(this.stompClient.connected) console.log("STOMP CONNECTED");
+    //this.stompClient.deactivate()
+    this.stompClient.activate()
+    
 
   }
 
   loginService(loginMessage: AuthMessage): Promise<string> {
-    return new Promise<string>( (resolve, reject) => {
-      this.stompClient.send('/app/auth/login', {}, JSON.stringify(loginMessage));
-      console.log("Mensaje enviado");
-  
-      this.stompClient.subscribe('/topic/auth/response', (messages: any) => {
-        console.log("Mensaje Recibido");
-        const message = messages;
-        console.log(message);
-        const messageString = new TextDecoder().decode(message._binaryBody);
-        console.log(messageString);
-        resolve(messageString); // Resolve the promise with the message
-      }, (error: Error) => {
-        reject(error); // Reject the promise with an error
-      });
+    return new Promise<string>((resolve, reject) => {
+      
+    if (this.stompClient){
+      
+        this.stompClient.publish({ destination: '/app/auth/login', body: JSON.stringify(loginMessage) });
+        console.log("Mensaje enviado");
+    
+        const subscription = this.stompClient.subscribe('/topic/auth/response', (messages: any)  => {
+          console.log("Respuesta a login recivida");
+          console.log(messages);
+          
+          try {
+            const messageString =(messages.body);
+            console.log(messageString);
+            resolve(messageString); // Resolve the promise with the message
+          } catch (error) {
+            console.error('Error decoding message:', error);
+            reject(error); // Reject the promise with the error
+          } finally {
+            subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+          }
+       });
+      }
     });
-  }
+    }
+    
+
   
   listRooms(): Promise<Array<string>> {
     return new Promise<Array<string>>((resolve, reject) => {
-      this.stompClient.send('/app/listRooms', {}, '{}');
-      this.stompClient.subscribe('/topic/listRooms', (messages: any) => {
+    if(this.stompClient){
+      this.stompClient.publish({ destination: '/app/listRooms' });
+      console.log("Mensaje enviado para listar salas");
+  
+      const subscription = this.stompClient.subscribe('/topic/listRooms', (messages: any) => {
+        console.log("Lista de salas recibida");
+        console.log(messages);
+  
         try {
-          console.log("Rooms Recibidas");
-          console.log(messages);
-
           const messageString = new TextDecoder().decode(messages._binaryBody);
-          console.log(messageString)
-          
-          // Parse the JSON string as a JavaScript object
-          const roomsList = JSON.parse(messageString);
-          console.log(roomsList);
-
-          // Ensure roomsList is an array of strings
+          console.log(messageString);
+  
+          // Parse the JSON string and validate the data structure
+          const roomsList: Array<string> = JSON.parse(messageString);
           if (!Array.isArray(roomsList) || !roomsList.every((room) => typeof room === 'string')) {
             throw new Error('Received data is not a valid string array');
           }
-          resolve(roomsList); // Resolve the promise with the array of rooms
+  
+          resolve(roomsList); // Resolve with the list of rooms
         } catch (error) {
-          reject(error); // Reject the promise if parsing or validation fails
+          console.error('Error obtaining room list:', error);
+          reject(error); // Reject with the error
+        } finally {
+          subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
         }
-      }, (error: Error) => {
-        reject(error); // Reject the promise if subscription fails
       });
+    }
+    
+      
     });
   }
+  
 
   // joinRoom(roomId: string) {
   //   this.stompClient.connect({}, ()=>{
@@ -97,58 +125,54 @@ export class WebSocketService {
   // }
 
 
-  getMessages(room: String): Promise<Array<string>> {
+  getMessages(room: string): Promise<Array<string>> {
     return new Promise<Array<string>>((resolve, reject) => {
-      this.stompClient.send('/app/getMessages', {}, JSON.stringify(room));
-      this.stompClient.subscribe('/topic/getMessages', (messages: any) => {
+      if(this.stompClient){
+      this.stompClient.publish({destination: '/app/getMessages', body: JSON.stringify(room)});
+      console.log("Mensaje enviado para obtener mensajes de la sala", room);
+  
+      const subscription = this.stompClient.subscribe('/topic/getMessages', (messages: any) => {
+        console.log("Mensajes de la sala recibidos");
+        console.log(messages);
+  
         try {
-          console.log("Mensages Recibidos");
-          console.log(messages);
-
           const messageString = new TextDecoder().decode(messages._binaryBody);
-          console.log(messageString)
-          
-          // Parse the JSON string as a JavaScript object
-          const roomMessages = JSON.parse(messageString);
-          console.log(roomMessages);
-
-          // Ensure roomsList is an array of strings
+          console.log(messageString);
+  
+          // Parse the JSON string and validate the data structure
+          const roomMessages: Array<string> = JSON.parse(messageString);
           if (!Array.isArray(roomMessages) || !roomMessages.every((msg) => typeof msg === 'string')) {
             throw new Error('Received data is not a valid string array');
           }
-          resolve(roomMessages); // Resolve the promise with the array of rooms
+  
+          resolve(roomMessages); // Resolve with the list of messages
         } catch (error) {
-          reject(error); // Reject the promise if parsing or validation fails
+          console.error('Error obtaining messages:', error);
+          reject(error); // Reject with the error
+        } finally {
+          subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
         }
-      }, (error: Error) => {
-        reject(error); // Reject the promise if subscription fails
       });
+    }
     });
   }
+  
 
   sendMessage(message: ChatMessage): Promise<string>{
-    return new Promise<string>( (resolve, reject) => {
-      this.stompClient.send('/app/sendMessage', {}, JSON.stringify(message));
+    return new Promise<string>( (resolve) => {
+      if(this.stompClient)
+      this.stompClient.publish({destination: '/app/sendMessage',body: JSON.stringify(message)});
       console.log("Mensaje enviado");
-  
-      this.stompClient.subscribe('/topic/sendMessage', (response: any) => {
-        console.log("Mensaje Recibido");
-        const response2 = response;
-        console.log(response2);
-        const response3 = new TextDecoder().decode(response._binaryBody);
-        console.log(response3);
-        resolve(response3); // Resolve the promise with the message
-      }, (error: Error) => {
-        reject(error); // Reject the promise with an error
-      });
+      resolve("Mensaje Enviado");
     });
   }
-
-  getMessageSubject(){
-    return this.messageSubject.asObservable();
-  }
-
 }
+
+  // getMessageSubject(){
+  //   return this.messageSubject.asObservable();
+  // }
+
+
 
 export function mySocketFactory() {
   return new SockJS('http://localhost:8080/socket');

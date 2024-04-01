@@ -17,15 +17,15 @@ export class AuthServicesService {
     console.log("Iniciando Login.....");
     var loginResponse = '';
 
-    this.webSocketService.loginService(loginMessage)
-        .then(responseMessage => {
-          console.log("Login response:", responseMessage);
-          loginResponse = responseMessage;
-        })
-        .catch(error => {
-          console.error("Login error:", error);
-          // Handle any errors during login
-        });
-    return loginResponse;
+    // this.webSocketService.loginService(loginMessage)
+    //     .then(responseMessage => {
+    //       console.log("Login response:", responseMessage);
+    //       loginResponse = responseMessage;
+    //     })
+    //     .catch(error => {
+    //       console.error("Login error:", error);
+    //       // Handle any errors during login
+    //     });
+    // return loginResponse;
   }
 }

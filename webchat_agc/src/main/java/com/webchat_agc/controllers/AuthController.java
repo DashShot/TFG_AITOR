@@ -33,13 +33,12 @@ public class AuthController {
         if (UserAux == null){
             // Handle the login message here
             response = "User not found";
-            this.messageTemplate.convertAndSend("/topic/auth/response", response);
-            
+      
         }else{
             response = "User found";
-            this.messageTemplate.convertAndSend("/topic/auth/response", response);
         }
-        
+
+        this.messageTemplate.convertAndSend("/topic/auth/response", response);
         System.out.println("Message sent to /topic/auth/response");
 
     }

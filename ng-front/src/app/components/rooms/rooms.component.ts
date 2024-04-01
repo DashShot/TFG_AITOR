@@ -30,7 +30,7 @@ export class RoomsComponent {
         });
         
       })
-      .catch(error =>{
+      .catch(_error =>{
         console.error('Error al obtener las rooms');
       })
   }
