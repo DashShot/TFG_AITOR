@@ -1,17 +1,33 @@
 <p>room works!</p>
 <p>You are in room {{ currentRoom }}</p>
 <button type="button" (click)="getMessages()">getMessages</button>
+
 @for (msg of msgList; track $index) {
     <li>{{msg}}</li>
 }
 
-<ul #messageArea></ul>
+<div>
+    <ul class="messageArea">
+        @for (msg of messagesSesion; track messagesSesion.indexOf) {
+            @if (msg.room == currentRoom) {
+                @if (msg.message_side == 'sender') {
+                    <li >You {{msg.username}} {{msg.content}} {{msg.room}}</li>
+                }@else{
+                    <li >From: {{msg.username}} {{msg.content}} {{msg.room}}</li>
+                }
+            }
+            
+        }
+        <li class ="messageRight"></li> 
+    </ul>
+    
+</div>
 
-<!-- <form [formGroup]="applyForm" (submit)="sendMessage()">
+<form [formGroup]="applyForm" (submit)="sendMessage()">
     <label for="username"> username: </label>
     <input id="username" type="text" formControlName="username">
 
     <label for="content">content: </label>
     <input id="content" type="text" formControlName="content">
     <button type="submit" class="button">Submit Message</button>
-</form> -->
+</form>

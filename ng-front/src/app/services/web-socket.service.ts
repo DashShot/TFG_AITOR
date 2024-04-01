@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-
-
 import { Client } from '@stomp/stompjs';
-
+import SockJS from 'sockjs-client';
+import { BehaviorSubject } from 'rxjs';
 
 import { AuthMessage } from  '../message-models/auth-message';
 import { ChatMessage } from '../message-models/chat-message';
-import SockJS from 'sockjs-client';
+
 
 
 @Injectable({
@@ -18,7 +17,7 @@ export class WebSocketService {
   private stompClient: Client | undefined = undefined; 
 
 
- // private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
+ private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
 
   constructor() { 
     this.initConnectionSocket();
@@ -74,8 +73,10 @@ export class WebSocketService {
     });
     }
     
+    
 
   
+
   listRooms(): Promise<Array<string>> {
     return new Promise<Array<string>>((resolve, reject) => {
     if(this.stompClient){
@@ -111,19 +112,37 @@ export class WebSocketService {
   }
   
 
-  // joinRoom(roomId: string) {
-  //   this.stompClient.connect({}, ()=>{
-  //     this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
-  //       const messageContent = JSON.parse(messages.body);
-  //       const currentMessage = this.messageSubject.getValue();
-  //       currentMessage.push(messageContent);
+  joinRoom(roomId: string) {
+    if(this.stompClient){
+      this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
+        console.log("SUSCRITO A LA QEUE DE LA ROOM")
+        const messageContent = JSON.parse(messages.body);
+        const currentMessage = this.messageSubject.getValue();
+        currentMessage.push(messageContent);
+        this.messageSubject.next(currentMessage);
 
-  //       this.messageSubject.next(currentMessage);
+      })
+    }
+  }
 
-  //     })
-  //   })
-  // }
+  getMessageSubject(){
+    return this.messageSubject.asObservable();
+  }
 
+  leftRoom(){
+    if(this.stompClient){
+      this.stompClient.unsubscribe
+    }
+  }
+
+  sendMessage(roomId: string, message: ChatMessage): Promise<string>{
+    return new Promise<string>( (resolve) => {
+      if(this.stompClient)
+      this.stompClient.publish({destination: `/app/${roomId}`,body: JSON.stringify(message)});
+      console.log("Mensaje enviado a /app/"+roomId);
+      resolve("Mensaje Enviado");
+    });
+  }
 
   getMessages(room: string): Promise<Array<string>> {
     return new Promise<Array<string>>((resolve, reject) => {
@@ -158,19 +177,10 @@ export class WebSocketService {
   }
   
 
-  sendMessage(message: ChatMessage): Promise<string>{
-    return new Promise<string>( (resolve) => {
-      if(this.stompClient)
-      this.stompClient.publish({destination: '/app/sendMessage',body: JSON.stringify(message)});
-      console.log("Mensaje enviado");
-      resolve("Mensaje Enviado");
-    });
-  }
+  
 }
 
-  // getMessageSubject(){
-  //   return this.messageSubject.asObservable();
-  // }
+  
 
 
 

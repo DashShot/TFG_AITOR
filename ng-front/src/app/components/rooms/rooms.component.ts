@@ -16,6 +16,7 @@ export class RoomsComponent {
   rooms:Array<RoomsMessage> = [];
 
   constructor(private webSocketService: WebSocketService){
+    this.webSocketService.leftRoom()
   }
 
   listRooms(){

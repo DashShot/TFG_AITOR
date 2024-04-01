@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.webchat_agc.dto.ChatMessage;
@@ -36,17 +38,15 @@ public class RoomController {
     @Autowired
     private final UserService userService;
 
-    @MessageMapping("/getMessages")
-    public void getRoomMessages(String roomName) throws Exception {
-        List<String> messagesRoomList = new ArrayList<>();
-        for (ChatMessage msg : this.roomService.getByName(roomName).getChatMessages()) {
-            messagesRoomList.add("From: " + msg.getSender().getUsername() + " Content: " + msg.getContent() + " Room: " + msg.getRoom().getRoomName() + " Date: " + msg.getTimestamp());
-        }
 
-        System.out.println(messagesRoomList);
+    @MessageMapping("/{roomId}")
+    public void roomMessageHandler(@DestinationVariable String roomId, @Payload ChatMessageFront chatMessageFront) {
+        System.out.println("MENSAJE RECIBIDO EN LA ROOM: " + roomId);
+        System.out.println(chatMessageFront.getUsername() + "En la " + chatMessageFront.getRoom());
+        
+        //GUARDAR EN BDD
 
-        this.messageTemplate.convertAndSend("/topic/getMessages",messagesRoomList);
-        System.out.println("Message sent to /topic/getMessages");
+        this.messageTemplate.convertAndSend("/topic/"+roomId,chatMessageFront);
     }
 
     @MessageMapping("/sendMessage")
@@ -67,4 +67,19 @@ public class RoomController {
         this.messageTemplate.convertAndSend("/topic/sendMessage",response);
         System.out.println("Message sent to /topic/sendMessages");
     }
+
+    @MessageMapping("/getMessages")
+    public void getRoomMessages(String roomName) throws Exception {
+        List<String> messagesRoomList = new ArrayList<>();
+        for (ChatMessage msg : this.roomService.getByName(roomName).getChatMessages()) {
+            messagesRoomList.add("From: " + msg.getSender().getUsername() + " Content: " + msg.getContent() + " Room: " + msg.getRoom().getRoomName() + " Date: " + msg.getTimestamp());
+        }
+
+        System.out.println(messagesRoomList);
+
+        this.messageTemplate.convertAndSend("/topic/getMessages",messagesRoomList);
+        System.out.println("Message sent to /topic/getMessages");
+    }
+
+    
 }
