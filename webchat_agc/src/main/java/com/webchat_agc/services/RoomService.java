@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.webchat_agc.dto.Room;
-import com.webchat_agc.dto.ChatRoomStatus;
 import com.webchat_agc.repositories.RoomsRepository;
 
 import lombok.RequiredArgsConstructor;

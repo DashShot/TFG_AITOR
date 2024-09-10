@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.webchat_agc.dto.Room;
 import com.webchat_agc.services.RoomService;
@@ -19,23 +17,20 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class WebController {
-    
-    private final SimpMessagingTemplate messageTemplate;
 
     @Autowired
     private final RoomService roomService;
-
     
-    @MessageMapping("/listRooms")
-    public void  listRooms() throws Exception {
+    @GetMapping("/listRooms")
+    public ResponseEntity<List<String>> getlistRooms() {
         List<String> roomsList = new ArrayList<>();
         for  (Room room : this.roomService.getAll()){
                 roomsList.add(""+room.getRoomName()+": "+room.getChatRoomStatus());
         }
+
         System.out.println(roomsList);
 
-        this.messageTemplate.convertAndSend("/topic/listRooms",roomsList);
-        System.out.println("Message sent to /topic/listRooms");
+        return  ResponseEntity.ok(roomsList);
     }
 
     // @MessageMapping("/sendMessage")

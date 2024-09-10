@@ -1,0 +1,49 @@
+@if(isLoginView){
+    <div class="page-content">
+      <div class="form-v5-content">
+        <form class="form-detail" action="#" method="post">
+          <h2>Login Form</h2>
+
+          <div class="form-row">
+            <label for="username">Username</label>
+            <input [(ngModel)]="userLoginObj.username" type="text" name="username" id="username" class="input-text" placeholder="Your Username" required="">
+            <i class="fas fa-user"></i>
+          </div>
+          
+          <div class="form-row">
+            <label for="password">Password</label>
+            <input [(ngModel)]="userLoginObj.password" type="password" name="password" id="password" class="input-text" placeholder="Your Password" required="">
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="form-row-last">
+            <input type="submit" name="login" class="login" value="Login" (click)="login()">
+          </div>
+          <p> Dont have an account?  <a href="#!" class="link-info" (click)="isLoginView = false"> Register here </a>
+        </form>
+      </div>
+    </div>
+  }@else{
+    <div class="page-content">
+      <div class="form-v5-content">
+        <form class="form-detail" action="#" method="post">
+          <h2>Register Account Form</h2>
+
+          <div class="form-row">
+            <label for="full-name">Your Username</label>
+            <input [(ngModel)]="userRegisterObj.username"  type="text" name="username" id="username" class="input-text"  placeholder="Your Username" required="">
+            <i class="fas fa-user"></i>
+          </div>
+          
+          <div class="form-row">
+            <label for="password">Password</label>
+            <input  [(ngModel)]="userRegisterObj.password" type="password" name="password" id="password" class="input-text" placeholder="Your Password" required="">
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="form-row-last">
+            <input type="submit" (click)="register()" name="register" class="register" value="Register">
+          </div>
+          <p> Do you have an account  <a href="#!"  class="link-info" (click)="isLoginView = true"> Login here </a>
+        </form>
+      </div>
+    </div>
+  }

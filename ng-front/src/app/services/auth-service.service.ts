@@ -1,21 +1,45 @@
 import { Injectable } from '@angular/core';
-import { AuthMessage } from '../message-models/auth-message';
-import { WebSocketService } from './web-socket.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from  'rxjs';
+import * as Stomp   from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthServicesService {
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private serverUrl = 'http://localhost:8080/api/auth'; // Replace with your server URL
 
-  constructor(private webSocketService: WebSocketService) { }
+  constructor(private http: HttpClient) {}
+
+  login(loginRequest: any): Observable<any> {
+    return this.http.post(`${this.serverUrl}/login`, loginRequest);
+  }
+
+  refreshToken(refreshToken: string): Observable<any> {
+    return this.http.post(`${this.serverUrl}/refresh`, { refreshToken });
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.serverUrl}/logout`, {});
+  }
+}
 
 
-  login(username: string, password: string){
-    console.log(`Usuario recivido -> Usuario: ${username}, password: ${password}`);
-    const loginMessage: AuthMessage = {username: username, password: password};
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class AuthServicesService {
 
-    console.log("Iniciando Login.....");
-    var loginResponse = '';
+//   constructor() { }
+
+  // login(authMessage: AuthMessage): Observable<any>{
+  //   console.log(`Usuario en servicio -> Usuario: ${authMessage.username}, password: ${authMessage.password}`);
+  //   return this.http.post("http://0.0.0.0:8080/app/auth/login", authMessage);
+  //  }
+
+  //  register(authMessage: AuthMessage): Observable<any>{
+  //   console.log(`Usuario en servicio -> Usuario: ${authMessage.username}, password: ${authMessage.password}`);
+  //   return this.http.post("http://0.0.0.0:8080/app/auth/register", authMessage);
+  //  }
 
     // this.webSocketService.loginService(loginMessage)
     //     .then(responseMessage => {
@@ -27,5 +51,9 @@ export class AuthServicesService {
     //       // Handle any errors during login
     //     });
     // return loginResponse;
-  }
-}
+// }
+
+
+
+
+

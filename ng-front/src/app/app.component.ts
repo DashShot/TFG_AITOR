@@ -10,10 +10,13 @@ import { RoomsComponent } from './components/rooms/rooms.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
+
+
 export class AppComponent {
   title = 'ng-front';
 
   greet(){
     alert('Hello!');
   }
+  
 }

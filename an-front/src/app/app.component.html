@@ -1,0 +1,20 @@
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+<ul class = 'navbar-nav'>
+    <li><a [routerLink]="['/home']">Home</a></li>
+    <li><a [routerLink]="['/login']">Login</a></li>
+    @if(this.authService.isLoggedIn()){
+        <button (click)="logOut()">LogOut</button>
+    }
+</ul>
+
+
+
+<router-outlet />

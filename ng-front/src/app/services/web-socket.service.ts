@@ -2,24 +2,28 @@ import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
+import { JwtModule } from "@auth0/angular-jwt";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+
 
 import { AuthMessage } from  '../message-models/auth-message';
 import { ChatMessage } from '../message-models/chat-message';
-
+import { AuthService } from './auth-service.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 
+
 export class WebSocketService {
   
   private stompClient: Client | undefined = undefined; 
 
 
- private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
+  private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
 
-  constructor() { 
+  constructor(private jwtService: JwtModule, private authService: AuthService) { 
     this.initConnectionSocket();
     
   }
@@ -32,13 +36,26 @@ export class WebSocketService {
       debug: function (str) {
         console.log(str);
       },
+      // connectHeaders: {
+      //   Authorization: 'Bearer ' + localStorage.getItem("access_token")
+      // },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
+      
     });
+
+
+   
+    this.authService.login({ username: 'your_username', password: 'your_password' });
+      
+
+
     this.stompClient.onConnect = function (){
       console.log("CLIENTE CREADOO")
     }
+
+
     if(this.stompClient.connected) console.log("STOMP CONNECTED");
     //this.stompClient.deactivate()
     this.stompClient.activate()
@@ -46,36 +63,33 @@ export class WebSocketService {
 
   }
 
-  loginService(loginMessage: AuthMessage): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  // loginService(loginMessage: AuthMessage): Promise<string> {
+  //   return new Promise<string>((resolve, reject) => {
       
-    if (this.stompClient){
+  //   if (this.stompClient){
       
-        this.stompClient.publish({ destination: '/app/auth/login', body: JSON.stringify(loginMessage) });
-        console.log("Mensaje enviado");
+  //       this.stompClient.publish({ destination: '/app/auth/login', body: JSON.stringify(loginMessage) });
+  //       console.log("Mensaje enviado");
     
-        const subscription = this.stompClient.subscribe('/topic/auth/response', (messages: any)  => {
-          console.log("Respuesta a login recivida");
-          console.log(messages);
+  //       const subscription = this.stompClient.subscribe('/topic/auth/response', (messages: any)  => {
+  //         console.log("Respuesta a login recivida");
+  //         console.log(messages);
           
-          try {
-            const messageString =(messages.body);
-            console.log(messageString);
-            resolve(messageString); // Resolve the promise with the message
-          } catch (error) {
-            console.error('Error decoding message:', error);
-            reject(error); // Reject the promise with the error
-          } finally {
-            subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
-          }
-       });
-      }
-    });
-    }
+  //         try {
+  //           const messageString =(messages.body);
+  //           console.log(messageString);
+  //           resolve(messageString); // Resolve the promise with the message
+  //         } catch (error) {
+  //           console.error('Error decoding message:', error);
+  //           reject(error); // Reject the promise with the error
+  //         } finally {
+  //           subscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+  //         }
+  //      });
+  //     }
+  //   });
+  //   }
     
-    
-
-  
 
   listRooms(): Promise<Array<string>> {
     return new Promise<Array<string>>((resolve, reject) => {
@@ -179,9 +193,6 @@ export class WebSocketService {
 
   
 }
-
-  
-
 
 
 export function mySocketFactory() {
