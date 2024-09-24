@@ -19,28 +19,25 @@ public class RoomService {
     private final RoomsRepository repository;
 
     public void saveRoom(Room chatRoom){
-        //chatRoom.setChatRoomStatus(ChatRoomStatus.AVAILABLE);
         repository.save(chatRoom);
     }
 
-    // public void closeChatRoom(ChatRoom chatRoom){
-    //     var storedChatRoom = repository.findById(chatRoom.getChatID()).orElse(null);
-
-    //     if(storedChatRoom != null){
-    //         storedChatRoom.setChatRoomStatus(ChatRoomStatus.UNAVAILABLE);
-    //         repository.save(storedChatRoom);
-    //     }
-    // }
-
-    
-    public Optional<Room> findById(String chatRoomID) {
-        return repository.findById(chatRoomID);
+    public Optional<Room> getById(String roomId) {
+        return repository.findById(roomId);
     }
     
     public  List<Room> getAll(){
         return repository.findAll();
     }
-    public Room getByName(String roomName){
-        return repository.findByRoomName(roomName);
+   
+    // Nuevo método para obtener el ID de la sala por su nombre
+    public Optional<String> getRoomIdByRoomName(String roomName) {
+        return repository.findByRoomName(roomName)  // Busca la sala por nombre
+                         .map(Room::getId);  // Obtén el ID si la sala existe
     }
+    
+    public boolean existsByRoomName(String roomName) {
+        return repository.existsByRoomName(roomName);
+    }
+
 }

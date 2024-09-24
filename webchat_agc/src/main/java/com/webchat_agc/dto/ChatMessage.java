@@ -1,19 +1,18 @@
 package com.webchat_agc.dto;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Document
+@Data
+@Document("Mensajes")
 public class ChatMessage {
     
     @Id
@@ -23,22 +22,13 @@ public class ChatMessage {
     private Date timestamp;
     
     //AÑADIR DEPENDENCIAS
-    @DocumentReference
-    private User sender;
+    private String senderId;
+    private String roomId;    
 
-    @DocumentReference
-    private Room room;    
-
-    public ChatMessage(String content, Date timestamp, User sender, Room room){
-        this.id = generateRandomId();
+    public ChatMessage(String content, Date timestamp, String senderId, String roomId){
         this.content = content;
         this.timestamp= timestamp;
-        this.sender = sender;
-        this.room = room;        
+        this.senderId = senderId;
+        this.roomId = roomId;        
     }
-    
-    private String generateRandomId() {
-        return UUID.randomUUID().toString();
-    }
-
 }

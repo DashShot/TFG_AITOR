@@ -1,0 +1,47 @@
+/* Estilo para el botón 'getListRooms' */
+button.list-button {
+  background: #4a9a9a; /* Color de fondo similar al 'Leave Room Button' */
+  color: #fff; /* Color del texto */
+  padding: 10px 20px; /* Relleno */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cursor de mano */
+  font-size: 16px; /* Tamaño de la fuente */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  transition: background-color 0.3s ease; /* Transición de color de fondo */
+  margin-bottom: 15px; /* Espacio inferior para separar los botones */
+}
+
+button.get-list-rooms:hover {
+  background: #3786bd; /* Color de fondo en hover */
+}
+
+/* Estilo para los botones de habitaciones */
+button.room-button {
+  background: #f7f9f9; /* Color de fondo */
+  color: #333; /* Color del texto */
+  border: 1px solid #ddd; /* Borde sutil */
+  padding: 10px 15px; /* Relleno */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cursor de mano */
+  font-size: 14px; /* Tamaño de la fuente */
+  margin: 5px; /* Espacio entre botones */
+  display: inline-block; /* Alineación en línea */
+  text-align: center; /* Alineación del texto */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición de colores */
+}
+
+button.room-button:hover {
+  background: #e0e0e0; /* Color de fondo en hover */
+  color: #000; /* Color del texto en hover */
+}
+
+/* Estilo para los campos de entrada de texto */
+input[type="text"] {
+  width: 70%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+}

@@ -1,0 +1,21 @@
+<body>
+  <p></p>
+
+  <div>
+    <button type="button" class="list-button" (click)="getListRooms()">Ver Rooms</button>
+  </div>
+
+  <div>
+    @for (room of rooms; track $index) {
+      <button type="button" class="room-button" [routerLink]="['/room', room.room]">
+        {{ room.room }}: {{ room.status }}
+      </button>
+    }
+  </div>
+
+  <div>
+    <input type="text" placeholder="Enter room name" #roomName>
+    <button type="button" class="list-button" (click)="createRoom(roomName.value)">Añadir Sala</button>
+  </div>
+
+</body>

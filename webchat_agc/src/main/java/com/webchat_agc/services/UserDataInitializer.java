@@ -29,44 +29,38 @@ public class UserDataInitializer {
     @Autowired
     private ChatMessageRepository messageRepository;
 
-    // @PostConstruct
-    // public void init() {
-    //     try {
-    //         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @PostConstruct
+    public void init() {
+        try {
+            // BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    //         User user1 = new User("user1", passwordEncoder.encode("pass1"),"USER");
-    //         userRepository.save(user1);
+            // User user1 = new User("user1", passwordEncoder.encode("pass1"),"USER");
+            // userRepository.save(user1);
 
-    //         User user2 = new User("user2", passwordEncoder.encode("pass2"), "USER");
-    //         userRepository.save(user2);
+            // User user2 = new User("user2", passwordEncoder.encode("pass2"), "USER");
+            // userRepository.save(user2);
 
-    //         Room chat1 = new Room("room1", ChatRoomStatus.AVAILABLE);
-    //         roomRepository.save(chat1);
-    //         Room chat2 = new Room("room2", ChatRoomStatus.AVAILABLE);
-    //         roomRepository.save(chat2);
+            // Room chat1 = new Room("room1", ChatRoomStatus.AVAILABLE);
+            // roomRepository.save(chat1);
+            // Room chat2 = new Room("room2", ChatRoomStatus.AVAILABLE);
+            // roomRepository.save(chat2);
 
-    //         ChatMessage msg1 = new ChatMessage("msg prueba 1", new Date(), user1, chat1);
-    //         chat1.addChatMessage(msg1);
-    //         messageRepository.save(msg1);
-    
-    //         ChatMessage msg2 = new ChatMessage("msg prueba 2", new Date(), user2, chat1);
-    //         chat1.addChatMessage(msg2);
-    //         messageRepository.save(msg2);
+            // ChatMessage msg1 = new ChatMessage("msg prueba 1", new Date(), user1.getId(), chat1.getId());
+            // messageRepository.save(msg1);
 
-    //         ChatMessage msg3 = new ChatMessage("prueba3", new Date() , user1, chat2);
-    //         chat2.addChatMessage(msg3);
-    //         messageRepository.save(msg3);
+            // ChatMessage msg2 = new ChatMessage("msg prueba 2", new Date(), user2.getId(), chat1.getId());
+            // messageRepository.save(msg2);
 
-    //         ChatMessage msg4 = new ChatMessage("prueba4", new Date() , user2, chat2);
-    //         chat2.addChatMessage(msg4);
-    //         messageRepository.save(msg4);
+            // ChatMessage msg3 = new ChatMessage("prueba3", new Date() , user1.getId(), chat2.getId());
+            // messageRepository.save(msg3);
 
-    //         roomRepository.save(chat1);
-    //         roomRepository.save(chat2); 
-            
-    //     } catch (DataAccessException e) {
-    //         // Handle data access exceptions appropriately (e.g., log the error)
-    //         e.printStackTrace();
-    //     }
-    // }
+            // ChatMessage msg4 = new ChatMessage("prueba4", new Date() , user2.getId(), chat2.getId());
+            // messageRepository.save(msg4);
+
+
+        } catch (DataAccessException e) {
+            // Handle data access exceptions appropriately (e.g., log the error)
+            e.printStackTrace();
+        }
+    }
 }

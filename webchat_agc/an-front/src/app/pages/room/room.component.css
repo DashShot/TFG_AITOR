@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+}
+
+/* Room Name Section */
+.room-name {
+  width: 100%;
+  margin: 0 auto;
+  background: #5eb2b3; /* Light blue background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border-radius: 5px;
+  color: #fff; /* White text color */
+}
+
+.room-name h1 {
+  font-size: 20px;
+  margin: 0; /* Remove default margins */
+}
+
+/* Message Area Section */
+.message-area {
+  width: 100%;
+  margin: 20px auto;
+  background: #dff1f1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 5px;
+  height: 70vh; /* Cambia la altura a un porcentaje del viewport */
+  overflow-y: auto;
+}
+
+.message-list {
+  list-style-type: none; /* Elimina los puntos de la lista */
+  padding-left: 0; /* Elimina el padding por defecto */
+}
+
+.message-list li {
+  margin-bottom: 10px; /* Añade un margen inferior para separar los mensajes */
+}
+
+/* Message Styles */
+.message-yours,
+.message-server,
+.message-others {
+  font-size: 18px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: flex; /* Usamos flexbox para organizar el contenido */
+  max-width: 70%; /* Limita el ancho de los mensajes */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); /* Añade una sombra suave */
+  border: 1px solid #ddd; /* Añade bordes sutiles */
+  align-items: center;
+}
+
+
+.message-yours {
+  background-color: #5fe6cf;
+  color: #333;
+  margin-left: auto;
+  text-align: right;
+  width: fit-content; 
+}
+
+
+.message-others {
+  background-color: #e0f2ff;
+  color: #333;
+  margin-right: auto; 
+  text-align: left;
+  width: fit-content;
+}
+
+
+.message-server {
+  background-color: #5eb2b3;
+  color: white;
+  text-align: center; /* Centra el texto del servidor */
+  margin: 0 auto; /* Centra completamente el mensaje del servidor */
+  width: fit-content;
+}
+
+.message-img {
+  max-width: 150px; /* Ajusta el tamaño máximo para que sea más pequeña */
+  border-radius: 5px; /* Mantiene los bordes redondeados */
+  margin-top: 5px;
+  display: block;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Añade un sombreado alrededor de la imagen */
+  border: 2px solid #ddd; /* Añade un borde ligero */
+  transition: transform 0.3s ease; /* Añade una transición suave para el efecto hover */
+}
+
+.message-img:hover {
+  transform: scale(1.05); /* Efecto de zoom suave al pasar el ratón */
+}
+
+.message-meta {
+  font-size: 12px; /* Ajusta el tamaño de las últimas palabras */
+  color: #555; /* Cambia el color de las últimas palabras */
+  margin-right: 10px;
+  margin-left: 10px;  /* Añade espacio a la izquierda del span */
+}
+
+/* BOTTONES */
+
+/* Estilo para el contenedor del formulario */
+.form-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Cambiado a columna para el contenedor general */
+  justify-content: center;
+  margin-top: 20px; /* Añade espacio entre el área de mensajes y el formulario */
+  background-color: #f7f9f9;
+  padding: 15px;
+  position: sticky;
+  bottom: 0; /* Fija el formulario al fondo */
+  border-radius: 5px; /* Añade bordes redondeados al contenedor */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+}
+
+/* Contenedor para alinear formularios horizontalmente */
+.form-content > div {
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  margin-bottom: 15px; /* Espacio entre cada formulario */
+}
+
+/* Estilo para el botón de obtener mensajes */
+.form-getmessages button {
+  background: #5eb2b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-getmessages button:hover {
+  background-color: #4a9a9a; /* Cambia el color al pasar el ratón */
+}
+
+/* Estilo para los campos de entrada de texto */
+input[type="text"] {
+  width: 70%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+}
+
+/* Estilo para los botones de enviar mensajes */
+.submit-button {
+  background: #5eb2b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #4a9a9a; /* Cambia el color al pasar el ratón */
+}
+
+/* Estilo para el formulario de archivos */
+.form-file {
+  display: flex;
+  align-items: center;
+  margin-top: 20px; /* Añade espacio entre el formulario de archivos y el resto del contenido */
+}
+
+input[type="file"] {
+  background: #5eb2b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px; /* Espacio entre el campo de archivo y el botón de enviar */
+  font-size: 14px; /* Ajusta el tamaño del texto si es necesario */
+  /* Note que esto puede no ser consistente entre navegadores */
+}
+/* Cambia el color al pasar el ratón */
+input[type="file"]:hover,
+.submit-button:hover {
+  background-color: #4a9a9a;
+}

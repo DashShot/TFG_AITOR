@@ -1,0 +1,92 @@
+version: "3.8"
+
+services:
+
+  backend_spring_1:
+    container_name: backend_spring_1
+    image: backend-sping:1.0
+    build: webchat_agc/
+    ports:
+      -  8443:8443
+    environment:
+      - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
+      - DATABASE_USERNAME=root
+      - DATABASE_PASWORD=password
+      #-jwt.secret
+    depends_on:
+      - mongodb
+    
+  backend_spring_2:
+    container_name: backend_spring_2
+    image: backend-spring:1.0
+    build: webchat_agc/
+    ports:
+      - 8444:8443  # Mapea el puerto 8444 al 8443 del contenedor
+    environment:
+      - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=password
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  frontend_angular:
+    container_name: frontend_angular
+    image: frontend_angular:1.0
+    build: webchat_agc/an-front/
+    ports:
+      - 4200:4200
+    depends_on:
+      - backend_spring
+
+  mongodb:
+    image: mongo:5.0
+    container_name: mongo
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=root
+        - MONGO_INITDB_ROOT_PASSWORD=password
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - ./database/db:/data/db
+      - ./database/dev.archive:/Databases/dev.archive
+      - ./database/production:/Databases/production
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: mexpress
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongodb:27017/?authSource=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+      - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+    links:
+      - mongodb
+    restart: unless-stopped
+    ports:
+      - 8081:8081
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672  # Puerto para comunicación con RabbitMQ
+      - 15672:15672  # Puerto para la interfaz de gestión de RabbitMQ (UI)
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq  # Persistencia de datos
+
+  haproxy:
+    image: haproxy:2.4
+    container_name: haproxy
+    ports:
+      - "80:80"  # El balanceador escucha en el puerto 80
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - backend_spring_1
+      - backend_spring_2

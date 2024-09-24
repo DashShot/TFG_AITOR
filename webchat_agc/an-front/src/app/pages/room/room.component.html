@@ -1,0 +1,97 @@
+<p></p>
+<div class="page-content">
+    <div class="room-name">
+        <h1>Estas en la sala: {{ currentRoom }}</h1>
+    </div>
+
+    @for (msg of msgList; track $index) {
+        <li class="message-list" >{{msg}}</li>
+    }
+
+    <div class="message-area">
+        <ul class="message-list">
+            @for (msg of messagesSesion; track messagesSesion.indexOf) {
+                @if (msg.message_room == currentRoom) {
+                    <!-- El mensaje es enviado por el usuario -->
+                    @if (msg.message_side == 'Yours') {  
+                        @if (msg.message_type == 'chatMessage'){
+                            <li class="message-yours">
+                                {{msg.message_content}} 
+                                <span class="message-meta">  [You {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}] </span>
+                            </li>
+                        }@else if(msg.message_type == 'img') {
+                            <li class="message-yours">
+                                <img class="message-img" [src]="msg.message_content" alt="File Image" />
+                                <span class="message-meta"> [You {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}] </span>
+                            </li>
+                        } @else if (msg.message_type == 'txt') {
+                            <li class="message-yours">
+                                <a class="message-txt-own" [href]="msg.message_content" download="message.txt">Descargar archivo de texto</a>
+                                <span class="message-meta"> [You {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}] </span>
+                            </li>
+                        }
+                    <!-- El mensaje es enviado  por  el Server -->
+                    } @else if (msg.message_side == 'Server') {
+                        @if (msg.message_type == 'chatMessage'){
+                            <li class="message-server">
+                                {{msg.message_content}} 
+                                <span class="message-meta">[From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                            </li>
+
+                        <!-- }@else if(msg.message_type == 'img') {
+                            <li class="message-server"> 
+                                <img class="message-img" [src]="msg.message_content" alt="File Image" /> 
+                                <span class="message-meta"> [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                            </li>
+                        } @else if (msg.message_type == 'txt') {
+                            <li class="message-txt-server">
+                                [From {{msg.message_username}}]
+                                <a [href]="msg.message_content" download="message.txt">Descargar archivo de texto</a>
+                                <span class="message-meta">[{{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                            </li> -->
+                        }
+                    <!-- El mensaje es enviado por otro usuario -->
+                    } @else {
+                        @if (msg.message_type == 'chatMessage'){
+                            <li class="message-others">
+                                <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                                {{msg.message_content}}     
+                            </li>
+                        }@else if(msg.message_type == 'img') {
+                            <li class="message-others">     
+                                <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                                <img class="message-img" [src]="msg.message_content" alt="File Image" />
+                            </li>      
+                        } @else if (msg.message_type == 'txt') {
+                            <li class="message-others">    
+                                <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
+                                <a class="message-txt-others" [href]="msg.message_content" download="message.txt">Archivo de texto</a>
+                            </li>
+                        }
+                    }
+                }
+            }
+        </ul>
+    </div>
+    
+
+    <form class="form-content">
+        <div class="form-getmessages">
+          <button type="button" (click)="getMessages()">Obtener Mensajes anteriores (5)</button>
+        </div>
+      
+        <div class="form-message">
+          <input [(ngModel)]="messageObj.content" type="text" name="content" placeholder="Escribe tu mensaje aquí">
+          <button type="submit" (click)="sendMessage()" class="submit-button">Enviar Mensaje</button>
+        </div>
+      
+        <div class="form-file">
+          <form (ngSubmit)="sendFile()" >
+            <input type="file" accept=".jpg, .png, .txt" (change)="onFileSelected($event)">
+            <button type="submit" class="submit-button">Enviar</button>
+          </form>
+        </div>
+      </form>
+      
+
+</div>

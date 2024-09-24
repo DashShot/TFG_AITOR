@@ -1,14 +1,7 @@
 package com.webchat_agc.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -22,7 +15,6 @@ import com.webchat_agc.dto.User;
 import com.webchat_agc.dto.messageModels.ChatMessageFront;
 import com.webchat_agc.dto.messageModels.FileMessageFront;
 import com.webchat_agc.services.ChatMessageService;
-
 import com.webchat_agc.services.RoomService;
 import com.webchat_agc.services.UserService;
 
@@ -35,124 +27,123 @@ public class RoomController {
     private final SimpMessagingTemplate messageTemplate;
 
     @Autowired
-    private final RoomService roomService;
-    
-    @Autowired
     private final ChatMessageService messageService;
+
+    @Autowired
+    private final RoomService roomService;
 
     @Autowired
     private final UserService userService;
 
 
-    
-
     @MessageMapping("/{roomId}")
     public void roomMessageHandler(@DestinationVariable String roomId, @Payload ChatMessageFront chatMessageFront) {
+        // Log de recepción del mensaje
         System.out.println("MENSAJE RECIBIDO EN LA ROOM: " + roomId);
-        System.out.println(chatMessageFront.getUsername() + "En la " + chatMessageFront.getRoom());
-        
-        // //GUARDAR EN BDD
+        System.out.println(chatMessageFront.getUsername() + " en la sala " + chatMessageFront.getRoom() + " a la hora: " + chatMessageFront.getTimeStamp());
 
-        this.messageTemplate.convertAndSend("/topic/"+roomId,chatMessageFront);
-    } 
+        try {
+             // Verificar si el usuario es "Server"
+             if ("Server".equals(chatMessageFront.getUsername())) {
+                // Si el usuario es "Server", solo enviar el mensaje al canal sin guardar en la base de datos **POSTERIOR  EDICION  PARA REG LOGS
+                this.messageTemplate.convertAndSend("/topic/" + roomId, chatMessageFront);
+                return;
+            }
+
+            // Buscar el ID de la sala en la base de datos
+            Optional<String> roomBDDId = roomService.getRoomIdByRoomName(roomId);
+
+            // Verificar si se encontró el ID de la sala
+            if (roomBDDId.isPresent()) {
+                // Obtener el ID del usuario a partir del nombre de usuario
+                Optional<User> userOptional = userService.getByUsername(chatMessageFront.getUsername());
+
+                if (userOptional.isPresent()) {
+                    // Crear un nuevo mensaje de chat
+                    ChatMessage msg = new ChatMessage(
+                            chatMessageFront.getContent(),
+                            chatMessageFront.getTimeStamp(),
+                            userOptional.get().getId(),
+                            roomBDDId.get()
+                    );
+
+                    // Guardar el mensaje en la base de datos
+                    messageService.saveChatMessage(msg);
+                } else {
+                    // Manejo del caso en que el usuario no se encuentra
+                    throw new IllegalArgumentException("Usuario no encontrado: " + chatMessageFront.getUsername());
+                }
+            } else {
+                // Manejo del caso en que la sala no se encuentra
+                throw new IllegalArgumentException("Sala no encontrada: " + roomId);
+            }
+
+            // Enviar el mensaje al canal correspondiente
+            messageTemplate.convertAndSend("/topic/" + roomId, chatMessageFront);
+
+        } catch (Exception e) {
+            // Manejo de cualquier otra excepción inesperada
+            System.err.println("Error inesperado: " + e.getMessage());
+            // Aquí también puedes agregar más lógica para manejar el error
+        }
+    }
+
+
+    @MessageMapping("{roomId}/getMessages")
+    public void getRoomMessages(@DestinationVariable String roomId, @Payload int numMsg) throws Exception {
+        try {
+            // Buscar el ID de la sala en la base de datos
+            Optional<String> roomBDDId = this.roomService.getRoomIdByRoomName(roomId);
+
+            if (roomBDDId.isPresent()) {
+                String roomBDD = roomBDDId.get();
+                
+                // Obtener los últimos numMsg mensajes del servicio
+                List<ChatMessage> ultimosMensajes = this.messageService.getLastMessages(roomBDD, numMsg);
+
+                // Enviar los mensajes al cliente
+                for (ChatMessage msg : ultimosMensajes) {
+                    // Obtener información adicional para el mensaje
+                    Optional<Room> roomOptional = roomService.getById(msg.getRoomId());
+                    Optional<User> userOptional = userService.getById(msg.getSenderId());
+
+                    if (roomOptional.isPresent() && userOptional.isPresent()) {
+                        ChatMessageFront mensajeRecuperado = new ChatMessageFront(
+                            roomOptional.get().getRoomName(),
+                            userOptional.get().getUsername(),
+                            msg.getContent(),
+                            msg.getTimestamp()
+                        );
+
+                        // Enviar el mensaje al canal correspondiente
+                        this.messageTemplate.convertAndSend("/topic/" + roomId, mensajeRecuperado);
+                    } else {
+                        // Manejo del caso en que la sala o el usuario no se encuentran
+                        System.err.println("Información incompleta para el mensaje: sala o usuario no encontrados.");
+                    }
+                }
+
+                System.out.println("Últimos " + numMsg + " mensajes enviados a /topic/" + roomId);
+            } else {
+                // Manejo del caso en que la sala no se encuentra
+                System.err.println("Sala con nombre " + roomId + " no encontrada.");
+            }
+        } catch (Exception e) {
+            // Manejo de cualquier otra excepción inesperada
+            System.err.println("Error al obtener los mensajes: " + e.getMessage());
+            throw new Exception("Error al obtener los mensajes: " + e.getMessage(), e);
+        }
+    }
 
     @MessageMapping("/{roomId}/files")
     public void handleFile(@DestinationVariable String roomId, @Payload FileMessageFront file) {
 
-        // Aquí puedes manejar el archivo (guardar, procesar, etc.)
+        // Aquí manejar el archivo (guardar, procesar, etc.)
         System.out.println("Archivo recibido: " + file.getFilename() + " en la sala: " + roomId);
-        // Enviar una respuesta a la sala si es necesario
+
+        // Enviar de vuelta
         this.messageTemplate.convertAndSend("/topic/" + roomId, file);
     } 
 
 
-    @MessageMapping("/getMessages")
-    public void getRoomMessages(String roomName) throws Exception {
-        List<String> messagesRoomList = new ArrayList<>();
-        for (ChatMessage msg : this.roomService.getByName(roomName).getChatMessages()) {
-            messagesRoomList.add("From: " + msg.getSender().getUsername() + " Content: " + msg.getContent() + " Room: " + msg.getRoom().getRoomName() + " Date: " + msg.getTimestamp());
-        }
-
-        System.out.println(messagesRoomList);
-
-        this.messageTemplate.convertAndSend("/topic/getMessages",messagesRoomList);
-        System.out.println("Message sent to /topic/getMessages");
-    }
-
-    //IMPLEMENTACIÓN POR  CHUNKS
-    // @MessageMapping("/{roomId}/files")
-    // public void handleFile(@DestinationVariable String roomId, @Payload Map<String, Object> chunkMessage) {
-    //     String chunk = (String) chunkMessage.get("chunk");
-    //     int chunkIndex = (int) chunkMessage.get("chunkIndex");
-    //     int totalChunks = (int) chunkMessage.get("totalChunks");
-    
-    //     // Guardar el fragmento temporalmente (por ejemplo, en memoria o en disco)
-    //     saveChunk(chunk, chunkIndex);
-    
-    //     // Si todos los fragmentos han sido recibidos, reconstruir el objeto
-    //     if (chunkIndex == totalChunks - 1) {
-    //         String largeObjectString = reassembleObject(totalChunks);
-    //         // Aquí puedes convertir la cadena de vuelta al objeto original
-    //         // y procesarlo según sea necesario
-    //         System.out.println("Objeto grande recibido completamente: " + largeObjectString);
-
-    //         this.messageTemplate.convertAndSend("/topic/"+ roomId, largeObjectString);
-    //     }
-    // }
-
-    // private Map<Integer, String> chunkStorage = new HashMap<>();
-
-    // // Guardar cada fragmento temporalmente en un mapa en memoria
-    // public void saveChunk(String chunk, int chunkIndex) {
-    //     // Almacenar el fragmento en el mapa, usando el índice como clave
-    //     chunkStorage.put(chunkIndex, chunk);
-    //     System.out.println("Guardando fragmento: " + chunkIndex);
-    // }
-
-    // public String reassembleObject(int totalChunks) {
-    //     StringBuilder largeObject = new StringBuilder();
-    
-    //     // Recorrer los fragmentos en orden y reconstruir el objeto completo
-    //     for (int i = 0; i < totalChunks; i++) {
-    //         if (chunkStorage.containsKey(i)) {
-    //             largeObject.append(chunkStorage.get(i));
-
-                
-    //         } else {
-    //             throw new IllegalStateException("Falta un fragmento en el índice " + i);
-    //         }
-    //     }
-    
-    //     // Limpiar el almacenamiento temporal después de reensamblar
-    //     chunkStorage.clear();
-    
-    //     System.out.println("Objeto reconstruido con éxito");
-    //     return largeObject.toString();
-    // }
-
-
-
-    // @MessageMapping("/sendMessage")
-    // public void sendMessage(@Payload ChatMessageFront chatMessageFront) throws  UsernameNotFoundException{
-    //     System.out.println(chatMessageFront.getContent()+" --- Prueba --- "+chatMessageFront.toString());
-    //     String response = "";
-
-    //     Room room = roomService.getByName(chatMessageFront.getRoom());
-    //     User user = userService.getByUsername(chatMessageFront.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        
-    //     ChatMessage chatMessage = new ChatMessage(chatMessageFront.getContent(), new Date(), user, room );
-    //     System.out.print(chatMessage.getContent());
-
-    //     room.addChatMessage(chatMessage);
-
-    //     messageService.saveChatMessage(chatMessage);
-    //     roomService.saveRoom(room);
-    //     response = "Mensaje creado y enviado correctamente";
-    //     this.messageTemplate.convertAndSend("/topic/sendMessage",response);
-    //     System.out.println("Message sent to /topic/sendMessages");
-    // }
-
-    
-
-    
 }

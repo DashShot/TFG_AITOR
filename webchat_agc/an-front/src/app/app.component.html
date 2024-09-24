@@ -1,0 +1,30 @@
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+<nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-brand" [routerLink]="['/home']">Home</a>
+
+        <div class="user-info">
+            <span> {{ currentUser }}</span>
+        </div>
+
+    <ul class="navbar-nav">
+    @if(!isLoggedIn){
+            <a [routerLink]="['/login']" class="nav-auth">Login</a>
+    }@else{
+            <a  [routerLink]="['/login']" class="nav-auth" (click)="logOut()">Logout</a>
+    }
+
+      </ul>
+    </div>
+</nav>
+ 
+
+<router-outlet></router-outlet>

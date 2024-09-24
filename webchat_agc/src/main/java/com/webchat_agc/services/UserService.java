@@ -16,12 +16,21 @@ public class UserService {
 
     @Autowired
     private final UserRepository repository;
-    
-    public Optional<User> getByUsername(String username) {
-            return repository.findByUsername(username);
-    }
 
     public void saveUser(User user){
         repository.save(user);
     }
+    
+     // Obtener un usuario por nombre de usuario
+     public Optional<User> getByUsername(String username) {
+        return repository.findByUsername(username);
+    }
+
+    // Obtener un usuario por ID
+    public Optional<User> getById(String id) {
+        return repository.findById(id);
+    }
+
+
+    
 }

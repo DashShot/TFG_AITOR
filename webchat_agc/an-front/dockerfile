@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /app
+COPY package*.json ./
+COPY proxy.conf.json ./
+COPY /ssl ./
+
+RUN npm install
+COPY . . 
+RUN npm run build
+CMD [ "npm", "start", "--", "--ssl", "true", "--ssl-cert", "/app/ssl/certificate.crt", "--ssl-key", "/app/ssl/private.key", "--host", "0.0.0.0", "--port", "4200"]

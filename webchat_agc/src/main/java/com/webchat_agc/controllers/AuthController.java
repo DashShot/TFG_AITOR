@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webchat_agc.security.jwt.AuthResponse;
 import com.webchat_agc.security.jwt.AuthResponse.Status;
+import com.webchat_agc.services.UserLoginService;
 import com.webchat_agc.security.jwt.LoginRequest;
-import com.webchat_agc.security.jwt.UserLoginService;
-import com.webchat_agc.services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,9 +24,6 @@ public class AuthController {
     @Autowired
     private UserLoginService userLoginService;
 
-    @Autowired
-    private UserService userService;
-    
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(

@@ -1,0 +1,4 @@
+FROM openjdk:17-jdk-alpine
+COPY /target/webchat_agc-0.0.1-SNAPSHOT.jar backend-spring.jar
+
+ENTRYPOINT [ "java", "-jar", "backend-spring.jar" ]

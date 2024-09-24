@@ -1,0 +1,68 @@
+/* Barra de navegación */
+.navbar {
+    background-color: #5eb2b3;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }
+  
+  /* El contenedor tiene más ancho ahora */
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px; /* Aumentar el ancho máximo */
+  }
+  
+  /* Marca de la navbar */
+  .navbar-brand {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Cambia el cursor a la manita */
+  }
+  
+  /* Navegación centrada */
+  .navbar-nav {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-nav li {
+    margin-left: 20px;
+  }
+  
+  .nav-auth {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Cambia el cursor a la manita */
+  }
+  
+  /* Efecto hover para Login y Home */
+  .nav-auth:hover,
+  .navbar-brand:hover {
+    background-color: #4a9a9a; /* Color de fondo en hover */
+  }
+  
+  /* Estilo para la información del usuario */
+  .user-info {
+    color: #fff;
+    font-weight: bold;
+    margin-right: 20px;
+  }
+  

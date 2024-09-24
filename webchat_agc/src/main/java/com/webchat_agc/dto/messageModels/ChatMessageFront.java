@@ -11,14 +11,16 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class ChatMessageFront {
     
-    private String content;
-    private String username;
     private String room;
+    private String username;
+    private String content;
+    private Date timeStamp;
 
-    public ChatMessageFront(String content, Date timestamp, String username, String room){
-        this.content = content;
-        this.username = username;
+    public ChatMessageFront( String room, String username, String content, Date timeStamp){
         this.room = room;
+        this.username = username;
+        this.content = content;
+        this.timeStamp = timeStamp;
     }
     
 }

@@ -1,6 +1,10 @@
 package com.webchat_agc.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.webchat_agc.dto.ChatMessage;
@@ -19,10 +23,10 @@ public class ChatMessageService {
          repository.save(chatMessage);
     }
 
-    // //REVISAR PARA CHAT ROOM NO ENCONTRADOS
-    // public List<ChatMessage> findChatMessagesByID(String chatRoomId){
-    //     return repository.findByChatId(chatRoomId);
-    // }
+    // Obtener los últimos mensajes de una sala
+    public List<ChatMessage> getLastMessages(String roomId, int numMsg) {
+        Pageable pageable = PageRequest.of(0, numMsg);
+        return repository.findByRoomOrderByTimestampDesc(roomId, pageable);
+    }
     
-
 }
