@@ -28,7 +28,7 @@ public class WebController {
     @Autowired
     private final RoomService roomService;
     
-    @GetMapping("/listRooms")
+    @GetMapping("/api/listRooms")
     public ResponseEntity<List<String>> getlistRooms() {
         List<String> roomsList = new ArrayList<>();
         for  (Room room : this.roomService.getAll()){
@@ -40,7 +40,7 @@ public class WebController {
         return  ResponseEntity.ok(roomsList);
     }
     
-   @PostMapping("/createRoom")
+   @PostMapping("/api/createRoom")
     public ResponseEntity<Map<String, String>> createRoom(@RequestBody String roomId) {
         Map<String, String> response = new HashMap<>();
         // Verificar si la sala ya existe

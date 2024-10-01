@@ -29,10 +29,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        
-        registry.enableSimpleBroker("/topic");
-        registry.setApplicationDestinationPrefixes("/app");
 
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableStompBrokerRelay("/queue", "/topic")
+                .setUserDestinationBroadcast("/topic/unresolved.user.dest")
+                .setUserRegistryBroadcast("/topic/registry.broadcast")
+                .setRelayHost("rabbitmq")
+                .setRelayPort(61613)
+                .setClientLogin("guest")
+                .setClientPasscode("guest");
+                // .setSystemLogin("stomp")
+                // .setSystemPasscode("stomp");
     }
 
     @Override
@@ -90,6 +97,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public JwtChannelInterceptor jwtChannelInterceptor(){
         return new JwtChannelInterceptor();
     }
-    
 
 }

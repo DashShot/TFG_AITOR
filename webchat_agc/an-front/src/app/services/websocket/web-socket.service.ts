@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { Client } from '@stomp/stompjs';
+import { Client, Message } from '@stomp/stompjs';
 import { BehaviorSubject } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { ChatMessage } from '../../message-models/chat-message';
 import { HttpClient } from '@angular/common/http';
 import { FileMessage } from '../../message-models/file-message';
+import { environment } from '../../../environments/enviroment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +16,29 @@ export class WebSocketService {
 
   private stompClient: Client | undefined =  undefined
   private http = inject(HttpClient)
-
+  
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
-
-  roomSuscription: any
+  private roomSubscription: any;
   
   constructor() {}
 
   initConnectionSocket(){
     // const xsrf = this.cookieService.get("XSRF-TOKEN");
+    console.log("Prueba   pre socket")
     this.stompClient = new Client({
-      brokerURL: "wss://localhost:8443/socket",
-      webSocketFactory: mySocketFactory,
+      // brokerURL: "wss://localhost:8443/socket",
+      // webSocketFactory: mySocketFactory,
+      // // connectHeaders: {
+      // //   "X-XSRF-TOKEN": xsrf
+      // // },
+      brokerURL: (environment.wsUrl),
+      webSocketFactory: () => new SockJS(environment.wsUrl),
       // connectHeaders: {
-      //   "X-XSRF-TOKEN": xsrf
+      //   //Authorization: `Bearer ${localStorage.getItem('token')}` // Enviar el token JWT si es necesario
+      //   login: 'guest',
+      //   passcode: 'guest',
+      //   host: 'rabbitmq',
+
       // },
       debug: function (str) {
         console.log(str);
@@ -44,102 +54,94 @@ export class WebSocketService {
 
     });
 
-    this.stompClient.onStompError = function (frame) {
-      // Will be invoked in case of error encountered at Broker
-      // Bad login/passcode typically will cause an error
-      // Complaint brokers will set `message` header with a brief message. Body may contain details.
-      // Compliant brokers will terminate the connection after any error
-      console.log('Broker reported error: ' + frame.headers['message']);
-      console.log('Additional details: ' + frame.body);
-    };
     this.stompClient.activate();
-    if(this.stompClient.connected) console.log("STOMP CONNECTED");
 
+    // Verificar conexión (puede necesitar un tiempo para conectarse)
+    this.stompClient.onConnect = () => {
+      console.log("STOMP CONNECTED");
+    };
   }
 
-  closeConnection(){
-    if(this.stompClient){
-      this.stompClient.deactivate()
+  closeConnection() {
+    if (this.stompClient) {
+      this.stompClient.deactivate();
     }
   }
 
-
-  getListRooms(){
-      return this.http.get("https://localhost:8443/listRooms", { observe: 'response' })
-  }
-  
-  createRoom(roomId: string){
-      return  this.http.post("https://localhost:8443/createRoom",  roomId )
+  getListRooms() {
+    return this.http.get(`${environment.apiUrl}/listRooms`, { observe: 'response' });
   }
 
-  joinRoom(roomId: string)  {
-    if(this.stompClient){
-  
-      this.roomSuscription = this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
+  createRoom(roomId: string) {
+    return this.http.post(`${environment.apiUrl}/createRoom`, roomId);
+  }
 
-        const messageContent = JSON.parse(messages.body);
-        const currentMessage = this.messageSubject.getValue();
+  joinRoom(roomId: string) {
+    if (this.stompClient) {
+      this.roomSubscription = this.stompClient.subscribe(`/topic/${roomId}`, (message: Message) => {
+        const messageContent: ChatMessage = JSON.parse(message.body);
+        const currentMessages = this.messageSubject.getValue();
+        currentMessages.push(messageContent);
+        this.messageSubject.next(currentMessages);
+      });
 
-        currentMessage.push(messageContent);
-        this.messageSubject.next(currentMessage);
-  
-      })
-
-      const newUser: ChatMessage = {room: roomId, content: `${localStorage.getItem("UserLogged ")} ha  entrado en la sala`, username: 'Server', timeStamp: new Date()}
-      this.stompClient.publish({destination: `/app/${roomId}`, body: JSON.stringify(newUser)});
-
+      const newUser: ChatMessage = {
+        room: roomId,
+        content: `${localStorage.getItem("UserLogged ")} ha entrado en la sala`,
+        username: 'Server',
+        timeStamp: new Date()
+      };
+      this.stompClient.publish({ destination: `/app/${roomId}`, body: JSON.stringify(newUser) });
     }
   }
 
-  leftRoom(roomId: string){
-    if(this.stompClient){
-      const disconectUser: ChatMessage = {content: `${localStorage.getItem("UserLogged ")} ha abandonado la sala`, username: 'Server', room: roomId, timeStamp: new Date()}
-      this.stompClient.publish({destination: `/app/${roomId}`, body: JSON.stringify(disconectUser)});
+  leftRoom(roomId: string) {
+    if (this.stompClient) {
+      const disconnectUser: ChatMessage = {
+        content: `${localStorage.getItem("UserLogged ")} ha abandonado la sala`,
+        username: 'Server',
+        room: roomId,
+        timeStamp: new Date()
+      };
+      this.stompClient.publish({ destination: `/app/${roomId}`, body: JSON.stringify(disconnectUser) });
 
-      this.roomSuscription.unsubscribe();
+      if (this.roomSubscription) {
+        this.roomSubscription.unsubscribe();
+      }
     }
   }
 
-  sendMessage(roomId: string, message: ChatMessage): Promise<string>{
-    return new Promise<string>( (resolve) => {
-      if(this.stompClient)
-        this.stompClient.publish({destination: `/app/${roomId}`,body: JSON.stringify(message)});
-        console.log("Mensaje enviado a /app/"+roomId);
+  sendMessage(roomId: string, message: ChatMessage): Promise<string> {
+    return new Promise<string>((resolve) => {
+      if (this.stompClient) {
+        this.stompClient.publish({ destination: `/app/${roomId}`, body: JSON.stringify(message) });
+        console.log(`Mensaje enviado a /app/${roomId}`);
         resolve("Mensaje Enviado");
+      }
     });
   }
 
-  sendFile(roomId: string, file: FileMessage) {
-    return new Promise<string>( (resolve) => {
-  if(this.stompClient)
-      this.stompClient.publish({destination: `/app/${roomId}/files`,body: JSON.stringify(file)});
-      console.log("Archivo enviado a /app/"+roomId);
-      resolve("Archivo Enviado");
+  sendFile(roomId: string, file: FileMessage): Promise<string> {
+    return new Promise<string>((resolve) => {
+      if (this.stompClient) {
+        this.stompClient.publish({ destination: `/app/${roomId}/files`, body: JSON.stringify(file) });
+        console.log(`Archivo enviado a /app/${roomId}`);
+        resolve("Archivo Enviado");
+      }
     });
   }
 
-  getMessageSubject(){
+  getMessageSubject() {
     return this.messageSubject.asObservable();
   }
 
-  getMessages(roomId: string): Promise<string>{
+  getMessages(roomId: string): Promise<string> {
     return new Promise<string>((resolve) => {
-
-      if(this.stompClient){
-
-        this.stompClient.publish({destination: `/app/${roomId}/getMessages`, body: '5'});
-        console.log("Mensaje enviado para obtener mensajes de la sala", roomId);
-
-        resolve("Mensages pedidos");
+      if (this.stompClient) {
+        this.stompClient.publish({ destination: `/app/${roomId}/getMessages`, body: '5' });
+        console.log(`Mensaje enviado para obtener mensajes de la sala ${roomId}`);
+        resolve("Mensajes pedidos");
       }
     });
-   
   }
-
-  
-
-}
-
-export function mySocketFactory() {
-  return new SockJS('https://localhost:8443/socket');
 }
