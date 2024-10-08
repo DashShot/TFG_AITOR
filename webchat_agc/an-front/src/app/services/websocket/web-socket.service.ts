@@ -16,30 +16,23 @@ export class WebSocketService {
 
   private stompClient: Client | undefined =  undefined
   private http = inject(HttpClient)
-  
+
+
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private roomSubscription: any;
   
   constructor() {}
 
   initConnectionSocket(){
-    // const xsrf = this.cookieService.get("XSRF-TOKEN");
+    const cookie = this.getCookie("AuthToken"); // Obtener el valor de la cookie "AuthToken"
     console.log("Prueba   pre socket")
     this.stompClient = new Client({
-      // brokerURL: "wss://localhost:8443/socket",
-      // webSocketFactory: mySocketFactory,
-      // // connectHeaders: {
-      // //   "X-XSRF-TOKEN": xsrf
-      // // },
+      
       brokerURL: (environment.wsUrl),
       webSocketFactory: () => new SockJS(environment.wsUrl),
-      // connectHeaders: {
-      //   //Authorization: `Bearer ${localStorage.getItem('token')}` // Enviar el token JWT si es necesario
-      //   login: 'guest',
-      //   passcode: 'guest',
-      //   host: 'rabbitmq',
-
-      // },
+      connectHeaders: {
+        Authorization: `Bearer ${cookie}` // Enviar el token JWT 
+      },
       debug: function (str) {
         console.log(str);
       },
@@ -61,6 +54,15 @@ export class WebSocketService {
       console.log("STOMP CONNECTED");
     };
   }
+
+  getCookie(name: string): string | null {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop()?.split(';').shift() || null;
+    }
+    return null;
+}
 
   closeConnection() {
     if (this.stompClient) {

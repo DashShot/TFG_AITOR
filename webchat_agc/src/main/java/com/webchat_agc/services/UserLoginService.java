@@ -145,7 +145,7 @@ public class UserLoginService {
 			for (Cookie cookie : request.getCookies()) {
 				cookie.setMaxAge(0);
 				cookie.setValue("");
-				cookie.setHttpOnly(true);
+				cookie.setHttpOnly(false);
 				cookie.setPath("/");
 				response.addCookie(cookie);
 			}

@@ -2,12 +2,8 @@ version: "3.8"
 
 services:
 
-  backend_spring_1:
-    container_name: backend_spring_1
-    image: backend-sping:1.0
-    build: webchat_agc/
-    ports:
-      -  8443:8443
+  backend_spring:
+    image: dashshot/webchat_agc:0.0.1
     environment:
       - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
       - DATABASE_USERNAME=root
@@ -15,30 +11,17 @@ services:
       #-jwt.secret
     depends_on:
       - mongodb
-    
-  backend_spring_2:
-    container_name: backend_spring_2
-    image: backend-spring:1.0
-    build: webchat_agc/
-    ports:
-      - 8444:8443  # Mapea el puerto 8444 al 8443 del contenedor
-    environment:
-      - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
-      - DATABASE_USERNAME=root
-      - DATABASE_PASSWORD=password
-    depends_on:
-      - mongodb
       - rabbitmq
+    deploy:
+      replicas: 2
 
   frontend_angular:
     container_name: frontend_angular
-    image: frontend_angular:1.0
-    build: webchat_agc/an-front/
+    image: dashshot/front_an:0.0.1
     ports:
       - 4200:4200
     depends_on:
-      - backend_spring_1
-      - backend_spring_2
+      - backend_spring
       - haproxy
 
   mongodb:
@@ -96,5 +79,4 @@ services:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./webchat_agc/an-front/ssl/fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
     depends_on:
-      - backend_spring_1
-      - backend_spring_2
+      - backend_spring

@@ -1,4 +1,21 @@
-FROM openjdk:17-jdk-alpine
-COPY /target/webchat_agc-0.0.1-SNAPSHOT.jar backend-spring.jar
+# Etapa 1: Construcción
+FROM maven:3.8.5-openjdk-17 AS builder
 
+# Copiar el pom.xml y el código fuente
+COPY pom.xml /app/
+COPY src /app/src/
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Construir la aplicación
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Ejecución
+FROM openjdk:17-jdk
+
+# Copiar el JAR generado desde la etapa de construcción
+COPY --from=builder /app/target/webchat_agc-0.0.1-SNAPSHOT.jar backend-spring.jar
+
+# Comando para ejecutar la aplicación
 ENTRYPOINT [ "java", "-jar", "backend-spring.jar" ]

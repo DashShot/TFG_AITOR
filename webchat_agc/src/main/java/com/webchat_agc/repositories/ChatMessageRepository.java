@@ -13,7 +13,7 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
    // public List<ChatMessage> findByChatId(String id);
 
    // Método para obtener los últimos mensajes de una sala, ordenados por timestamp
-   @Query("{ 'roomId': ?0 }, sort: { 'timestamp': -1 }")
+   @Query("{ 'roomId': ?0 }")
    List<ChatMessage> findByRoomOrderByTimestampDesc(String roomId, Pageable pageable);
 
    @Query("{ 'roomId': ?0 }")
