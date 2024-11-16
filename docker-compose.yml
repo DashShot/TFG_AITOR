@@ -2,6 +2,23 @@ version: "3.8"
 
 services:
 
+  # - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
+  #     - CATALOG=chat_db
+  #     - DATABASE_USERNAME=root
+  # backend_spring:
+  #   build: ./webchat_agc
+  #   environment:
+  #     - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+  #     - DATABASE_USERNAME=DatabaseUSER
+  #     - DATABASE_PASWORD=databasePASS
+  #     - CATALOG=tfg_chat_db
+  #     #-jwt.secret
+  #   depends_on:
+  #     # - mongodb
+  #     - rabbitmq
+  #   deploy:
+  #     replicas: 2
+
   backend_spring:
     build: ./webchat_agc
     environment:
@@ -9,10 +26,14 @@ services:
       - DATABASE_USERNAME=DatabaseUSER
       - DATABASE_PASWORD=databasePASS
       - CATALOG=tfg_chat_db
-      #-jwt.secret
+      - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
+      - AMQ_HOST=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com
+      - AMQ_PORT=5671
+      - AMQ_USERNAME=amazonmqUSER
+      - AMQ_PASSWORD=amazonmqPASS
     depends_on:
-      # - mongodb
-      - rabbitmq
+      - mongodb
+      # - rabbitmq
     deploy:
       replicas: 2
 
@@ -54,21 +75,21 @@ services:
   #   ports:
   #     - 8081:8081
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - 5672:5672  # Puerto para AMQP
-      - 61613:61613  # Puerto STOMP
-      - 15674:15674  #WEbSTOMP
-      - 15672:15672  # Puerto para la interfaz de gestión de RabbitMQ (UI)
-    volumes:
-      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia  # Persistencia de datos
-    entrypoint: >
-      sh -c "rabbitmq-plugins enable --offline rabbitmq_web_stomp && rabbitmq-server"
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=guest
+  #     - RABBITMQ_DEFAULT_PASS=guest
+  #   ports:
+  #     - 5672:5672  # Puerto para AMQP
+  #     - 61613:61613  # Puerto STOMP
+  #     - 15674:15674  #WEbSTOMP
+  #     - 15672:15672  # Puerto para la interfaz de gestión de RabbitMQ (UI)
+  #   volumes:
+  #     - ./rabbitmq/data:/var/lib/rabbitmq/mnesia  # Persistencia de datos
+  #   entrypoint: >
+  #     sh -c "rabbitmq-plugins enable --offline rabbitmq_web_stomp && rabbitmq-server"
 
   haproxy:
     image: haproxy:2.4

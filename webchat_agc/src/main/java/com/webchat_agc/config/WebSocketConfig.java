@@ -33,11 +33,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app");
         registry.enableStompBrokerRelay("/queue", "/topic")
                 .setUserDestinationBroadcast("/topic/unresolved.user.dest")
-                .setUserRegistryBroadcast("/topic/registry.broadcast")
-                .setRelayHost("rabbitmq")
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
+                .setUserRegistryBroadcast("/topic/registry.broadcast");
+                // .setRelayHost("rabbitmq")
+                // .setRelayPort(61613)
+                // .setClientLogin("guest")
+                // .setClientPasscode("guest");
                 // .setSystemLogin("stomp")
                 // .setSystemPasscode("stomp");
     }
