@@ -25,7 +25,7 @@ public class DocumentDBConf {
     @Bean
     public SSLContext mongoSSLContext() throws GeneralSecurityException, IOException {
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        try (InputStream in = new FileInputStream("/tmp/certs/rds-truststore.jks")) {
+        try (InputStream in = new FileInputStream("src/main/resources/tmp/certs/rds-truststore.jks")) {
             trustStore.load(in, "amazonCApass".toCharArray());
         }
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
