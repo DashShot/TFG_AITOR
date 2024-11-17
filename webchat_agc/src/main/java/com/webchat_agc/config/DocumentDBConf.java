@@ -26,7 +26,7 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 public class DocumentDBConf extends AbstractMongoClientConfiguration {
 
 
-    private static final String CERT_FILE_PATH = "db-certs/global-bundle.pem";
+    private static final String CERT_FILE_PATH = "/db-certs/global-bundle.pem";
     private static final String END_OF_CERTIFICATE_DELIMITER = "-----END CERTIFICATE-----";
     private static final String CERTIFICATE_TYPE = "X.509";
     private static final String TLS_PROTOCOL = "TLS";
