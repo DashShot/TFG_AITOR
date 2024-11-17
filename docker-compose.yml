@@ -3,14 +3,23 @@ version: "3.8"
 services:
 
   backend_spring:
-    image: dashshot/webchat_agc:0.0.1
+    #image: dashshot/webchat_agc:0.0.1
+    build: ./webchat_agc
     environment:
-      - DATABASE_URL=mongodb://root:password@mongodb:27017/chat_db?authSource=admin
-      - DATABASE_USERNAME=root
-      - DATABASE_PASWORD=password
-      #-jwt.secret
+      - DB_USERNAME=DatabaseUSER
+      - DB_PASSWORD=databasePASS
+      - CONECTION_STRING=mongodb://%s:%s@%s:%s/%s?directConnection=true&serverSelectionTimeoutMS=2000&tlsAllowInvalidHostnames=true&tls=true
+      - DB_HOST=127.0.0.1
+      - DB_PORT=27017
+      - DB_NAME=chat_db
+      - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
+      - AMQ_HOST=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com
+      - AMQ_PORT=5671
+      - AMQ_USERNAME=amazonmqUSER
+      - AMQ_PASSWORD=amazonmqPASS
+      #-jwt.secret=your_secret_key_here
     depends_on:
-      - mongodb
+      # - mongodb
       - rabbitmq
     deploy:
       replicas: 2
@@ -24,50 +33,50 @@ services:
       - backend_spring
       - haproxy
 
-  mongodb:
-    image: mongo:5.0
-    container_name: mongo
-    environment:
-        - MONGO_INITDB_ROOT_USERNAME=root
-        - MONGO_INITDB_ROOT_PASSWORD=password
-    restart: unless-stopped
-    ports:
-      - 27017:27017
-    volumes:
-      - ./database/db:/data/db
-      - ./database/dev.archive:/Databases/dev.archive
-      - ./database/production:/Databases/production
+  # mongodb:
+  #   image: mongo:5.0
+  #   container_name: mongo
+  #   environment:
+  #       - MONGO_INITDB_ROOT_USERNAME=root
+  #       - MONGO_INITDB_ROOT_PASSWORD=password
+  #   restart: unless-stopped
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - ./database/db:/data/db
+  #     - ./database/dev.archive:/Databases/dev.archive
+  #     - ./database/production:/Databases/production
 
-  mongo-express:
-    image: mongo-express:1.0.2
-    container_name: mexpress
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongodb:27017/?authSource=admin
-      - ME_CONFIG_BASICAUTH_USERNAME=mexpress
-      - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
-    links:
-      - mongodb
-    restart: unless-stopped
-    ports:
-      - 8081:8081
+  # mongo-express:
+  #   image: mongo-express:1.0.2
+  #   container_name: mexpress
+  #   environment:
+  #     - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+  #     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+  #     - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongodb:27017/?authSource=admin
+  #     - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+  #   links:
+  #     - mongodb
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8081:8081
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - 5672:5672  # Puerto para AMQP
-      - 61613:61613  # Puerto STOMP
-      - 15674:15674  #WEbSTOMP
-      - 15672:15672  # Puerto para la interfaz de gestión de RabbitMQ (UI)
-    volumes:
-      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia  # Persistencia de datos
-    entrypoint: >
-      sh -c "rabbitmq-plugins enable --offline rabbitmq_web_stomp && rabbitmq-server"
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=guest
+  #     - RABBITMQ_DEFAULT_PASS=guest
+  #   ports:
+  #     - 5672:5672  # Puerto para AMQP
+  #     - 61613:61613  # Puerto STOMP
+  #     - 15674:15674  #WEbSTOMP
+  #     - 15672:15672  # Puerto para la interfaz de gestión de RabbitMQ (UI)
+  #   volumes:
+  #     - ./rabbitmq/data:/var/lib/rabbitmq/mnesia  # Persistencia de datos
+  #   entrypoint: >
+  #     sh -c "rabbitmq-plugins enable --offline rabbitmq_web_stomp && rabbitmq-server"
 
   haproxy:
     image: haproxy:2.4

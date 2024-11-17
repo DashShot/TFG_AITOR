@@ -5,6 +5,13 @@
             "name": "WebchatAgcApplication",
             "request": "launch",
             "mainClass": "com.webchat_agc.webchat_agc.WebchatAgcApplication",
+            "projectName": "webchat_agc"
+        },
+        {
+            "type": "java",
+            "name": "WebchatAgcApplication",
+            "request": "launch",
+            "mainClass": "com.webchat_agc.webchat_agc.WebchatAgcApplication",
             "projectName": "com.webchat_agc-webchat_agc"
         },
         {
