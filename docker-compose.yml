@@ -15,7 +15,7 @@ services:
       # - DB_PORT=27017
       - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
       - DB_NAME=chat_db
-      - JAVA_OPTIONS: "-DsslCertificate=/tmp/certs/rds-truststore.jks"
+      - JAVA_OPTIONS= -DsslCertificate=/tmp/certs/rds-truststore.jks
       - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
       - AMQ_HOST=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com
       - AMQ_PORT=5671
