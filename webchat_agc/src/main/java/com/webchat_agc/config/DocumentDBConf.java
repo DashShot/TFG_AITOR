@@ -2,16 +2,6 @@ package com.webchat_agc.config;
 
 import com.mongodb.MongoClientSettings;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
-import java.security.SecureRandom;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
 import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoPropertiesClientSettingsBuilderCustomizer;
@@ -22,26 +12,30 @@ import org.springframework.context.annotation.Configuration;
 public class DocumentDBConf {
 
 
-    @Bean
-    public SSLContext mongoSSLContext() throws GeneralSecurityException, IOException {
-        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        try (InputStream in = new FileInputStream("src/main/resources/tmp/certs/rds-truststore.jks")) {
-            trustStore.load(in, "amazonCApass".toCharArray());
+	private MongoProperties properties;
+	
+	public static final String KEY_STORE_TYPE = "/tmp/certs/rds-truststore.jks";
+    	public static final String DEFAULT_KEY_STORE_PASSWORD = "amazonCApass";
+
+        public DocumentDBConf(final MongoProperties properties) {
+            super();
+            this.properties = properties;
         }
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(trustStore);
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
-        return sslContext;
-    }
 
-    @Bean
-    public MongoClientSettingsBuilderCustomizer mongoSslCustomizer(SSLContext mongoSSLContext) {
-        return clientSettingsBuilder -> clientSettingsBuilder.applyToSslSettings(builder -> builder.context(mongoSSLContext));
-    }
+        @Bean
+        public MongoClientSettings mongoClientSettings() { 
+             setSslProperties();
+	     return MongoClientSettings.builder()
+                    .applyToSslSettings(builder -> builder.enabled(true))
+                    .build();
+	}
 
-
-
+        private static void setSslProperties() { 
+    	      System.setProperty("javax.net.ssl.trustStore", KEY_STORE_TYPE);
+    	      System.setProperty("javax.net.ssl.trustStorePassword",           
+                    DEFAULT_KEY_STORE_PASSWORD);
+        }
+	
 
     // extends AbstractMongoClientConfiguration {
 
