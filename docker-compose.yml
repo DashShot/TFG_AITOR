@@ -5,15 +5,13 @@ services:
   backend_spring:
     #image: dashshot/webchat_agc:0.0.1
     build: ./webchat_agc
-    networks:
-      - documentdb
     environment:
-      #  - DB_USERNAME=DatabaseUSER
-      #  - DB_PASSWORD=databasePASS
-      # # - CONECTION_STRING=mongodb://%s:%s@%s:%s/%s?directConnection=true&serverSelectionTimeoutMS=2000&tlsAllowInvalidHostnames=true&tls=true
-      #  - DB_HOST=tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com
-      #  - DB_PORT=27017
-        - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?tls=true
+        - DB_USERNAME=DatabaseUSER
+        - DB_PASSWORD=databasePASS
+      #  - CONECTION_STRING=mongodb://%s:%s@%s:%s/%s?directConnection=true&serverSelectionTimeoutMS=2000&tlsAllowInvalidHostnames=true&tls=true
+        - DB_HOST=tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com
+        - DB_PORT=27017
+        # - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?tls=true
         - DB_NAME=chat_db
       # - JAVA_OPTIONS= -Djavax.net.ssl.trustStore=/tmp/certs/rds-truststore.jks -Djavax.net.ssl.trustStorePassword=amazonCApass  -Djavax.net.debug=ssl
         - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
@@ -93,8 +91,3 @@ services:
       - ./webchat_agc/an-front/ssl/fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
     depends_on:
       - backend_spring
-
-networks:
-  documentdb:
-    name: documentdb
-    driver: bridge
