@@ -78,7 +78,7 @@ public class DocumentDbMongoConfig extends AbstractMongoClientConfiguration {
      *   mongodb://${user}:${password}@${host}:${port}/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
      */
     private String getConnectionString() {
-        return String.format("mongodb://%s:%s@%s:%s/%s?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false",
+        return String.format("mongodb://%s:%s@%s:%s/%s&readPreference=secondaryPreferred&retryWrites=false&connectTimeoutMS=30000&socketTimeoutMS=30000&retryWrites=false",
                 config.getUser(),
                 config.getPassword(),
                 config.getHost(),
