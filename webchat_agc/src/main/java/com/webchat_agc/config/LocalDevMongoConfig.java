@@ -31,7 +31,7 @@ public class LocalDevMongoConfig extends AbstractMongoClientConfiguration {
 
     //mongodb://${mongo.user}:${mongo.password}@${mongo.host}:${mongo.port}/${mongo.database}?authSource=admin
     private String getConnectionString() {
-        return String.format("mongodb://%s:%s@%s:%s/%s??ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false",
+        return String.format("mongodb://%s:%s@%s:%s/%s??ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&connectTimeoutMS=30000&socketTimeoutMS=30000&retryWrites=false",
                 config.getUser(),
                 config.getPassword(),
                 config.getHost(),
