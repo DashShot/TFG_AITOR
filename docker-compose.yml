@@ -1,33 +1,33 @@
 version: "3.8"
 
 services:
-
-  backend_spring:
-    #image: dashshot/webchat_agc:0.0.1
-    build: ./webchat_agc
-    environment:
-       - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
-       - DB_NAME=chat_db
-       - JAVA_OPTIONS= -Djavax.net.ssl.trustStore=./webchat/tmp/certs/rds-truststore.jks -Djavax.net.ssl.trustStorePassword=amazonCApass -Djavax.net.debug=ssl
-      #   - DB_USERNAME=DatabaseUSER
-      #   - DB_PASSWORD=databasePASS
-      #   - CONECTION_STRING=mongodb://%s:%s@%s:%s/%s?directConnection=true&serverSelectionTimeoutMS=2000&tlsAllowInvalidHostnames=true&tls=true
-      #   - DB_HOST=tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com
-      #   - DB_PORT=27017
-      #   - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
-      #   - AMQ_HOST=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com
-      #   - AMQ_PORT=5671
-      #   - AMQ_USERNAME=amazonmqUSER
-      #   - AMQ_PASSWORD=amazonmqPASS
-      # #-jwt.secret=your_secret_key_here
-     depends_on:
-      # - mongodb
-       - rabbitmq
-    deploy:
-      replicas: 2
+  
+  # backend_spring:
+  #    build: ./webchat_agc  # image: dashshot/webchat_agc:0.0.1
+  #    environment:
+  #      - DATABASE_URL=mongodb://DatabaseUSER:databasePASS@tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com:27017/?ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+  #      - DB_NAME=chat_db
+  #      - JAVA_OPTIONS= -Djavax.net.ssl.trustStore=./tmp/certs/rds-truststore.jks -Djavax.net.ssl.trustStorePassword=amazonCApass -Djavax.net.debug=ssl
+  #     #   - DB_USERNAME=DatabaseUSER
+  #     #   - DB_PASSWORD=databasePASS
+  #     #   - CONECTION_STRING=mongodb://%s:%s@%s:%s/%s?directConnection=true&serverSelectionTimeoutMS=2000&tlsAllowInvalidHostnames=true&tls=true
+  #     #   - DB_HOST=tfg-docdb-cluster.cluster-cra846uccfhv.eu-west-3.docdb.amazonaws.com
+  #     #   - DB_PORT=27017
+  #     #   - AMQ_ADRESSES=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com:5671
+  #     #   - AMQ_HOST=amqps://b-da69f55a-7c1e-40ea-817c-1f0f4c2ae7f8.mq.eu-west-3.amazonaws.com
+  #     #   - AMQ_PORT=5671
+  #     #   - AMQ_USERNAME=amazonmqUSER
+  #     #   - AMQ_PASSWORD=amazonmqPASS
+  #     # #-jwt.secret=your_secret_key_here
+  #    depends_on:
+  #     # - mongodb
+  #      - rabbitmq
+  #    deploy:
+  #      replicas: 2
 
   frontend_angular:
     container_name: frontend_angular
+    network_mode: "host"
     image: dashshot/front_an:0.0.1
     ports:
       - 4200:4200
@@ -67,6 +67,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    network_mode: "host"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -83,6 +84,7 @@ services:
   haproxy:
     image: haproxy:2.4
     container_name: haproxy
+    network_mode: "host"
     ports:
       - "80:80"  
       - "443:443"        # Puerto HTTPS
