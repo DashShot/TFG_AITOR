@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
-@Profile({"dev || qa || prod"})
+@RequiredArgsConstructor  //@Profile({"dev || qa || prod"})
 @EnableMongoRepositories(basePackages = "co.my.data.repositories")
 public class DocumentDbMongoConfig extends AbstractMongoClientConfiguration {
 
