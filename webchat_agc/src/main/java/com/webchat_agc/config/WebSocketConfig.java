@@ -44,7 +44,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket/*")
+        registry.addEndpoint("/api/socket/*")
                 .setAllowedOriginPatterns("*")//CLiente Angular "https://localhost:4200/"
                 .withSockJS()
                 .setStreamBytesLimit(128 * 1024 * 1024);  // Aumentar el límite a 10 MB
