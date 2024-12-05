@@ -68,9 +68,11 @@ public class SecurityConfig{
         http
         .authorizeHttpRequests(authorize -> authorize
                 // PRIVATE ENDPOINTS
-                .requestMatchers(HttpMethod.POST,"/api/auth/**", "/error").permitAll()
-               // .requestMatchers(HttpMethod.PUT,"/api/books/**").hasRole("USER")
-               // .requestMatchers(HttpMethod.DELETE,"/api/books/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/auth/**", "/error").permitAll()
+                .requestMatchers(HttpMethod.GET, "/error").permitAll()
+
+                // Protected endpoints
+                .requestMatchers("/api/socket/**").permitAll() // Proteger WebSocket
                 // PUBLIC ENDPOINTS
                 .anyRequest().permitAll()
         );
@@ -104,7 +106,7 @@ public class SecurityConfig{
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration  = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://localhost:4200"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN", "filename"));
         configuration.setAllowCredentials(true);

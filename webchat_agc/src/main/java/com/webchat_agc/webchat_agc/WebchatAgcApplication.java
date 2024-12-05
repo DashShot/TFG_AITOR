@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @SpringBootApplication
-@ComponentScan({"com.webchat_agc.config", "com.webchat_agc.services", "com.webchat_agc.controllers","com.webchat_agc.security"})
-@EnableMongoRepositories("com.webchat_agc.repositories")
+@EnableMongoRepositories( "com.webchat_agc.repositories")
+@ComponentScan({"com.webchat_agc.config", "com.webchat_agc.services", "com.webchat_agc.controllers","com.webchat_agc.repositories", "com.webchat_agc.security"})
 public class WebchatAgcApplication  {
 
 

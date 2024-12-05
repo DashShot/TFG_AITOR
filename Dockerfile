@@ -30,4 +30,10 @@ FROM openjdk:17-jdk
 
 COPY --from=builder /app/target/webchat_agc-0.0.1-SNAPSHOT.jar backend-spring.jar
 
+# Copiar el truststore al contenedor
+# COPY webchat_agc/src/main/resources/rds-truststore.jks /app/rds-truststore.jks
+
+# Configurar las opciones JVM para usar el truststore
+#ENV JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/app/rds-truststore.jks -Djavax.net.ssl.trustStorePassword=amazonCApass"
+
 ENTRYPOINT [ "java", "-jar", "backend-spring.jar" ]
