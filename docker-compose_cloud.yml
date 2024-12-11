@@ -1,0 +1,16 @@
+services:
+  
+  backend_spring:
+     #build: ./webchat_agc  
+     image: dashshot/webchat_agc:AWScloud
+     ports:
+      - "443:8443"   
+     environment:
+        - DATABASE_URL=mongodb://databaseUSER:databasePAS@tfgclusternossl.cluster-cnk2muikun1e.eu-west-3.docdb.amazonaws.com:27017
+        - DATABASE_NAME=chat_db
+        - AMAZONMQ_RELAYHOST=b-84372ca7-8fd3-484b-b7b8-7eb4e72c7ded-1.mq.eu-west-3.amazonaws.com
+        - AMAZONMQ_RELAYPORT=61614
+        - AMAZONMQ_USER=amazonmqUSER
+        - AMAZONMQ_PASS=amazonmqPASS
+       # #-jwt.secret=your_secret_key_here
+ 

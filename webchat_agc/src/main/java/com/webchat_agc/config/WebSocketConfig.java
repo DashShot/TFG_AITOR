@@ -61,6 +61,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setClientLogin(amazonMQProperties.getUser()) // Usuario del cliente
             .setClientPasscode(amazonMQProperties.getPassword()) // Contraseña del cliente
             .setTcpClient(tcpClient); // Configuración del cliente TCP
+
     }
 
     @Override
