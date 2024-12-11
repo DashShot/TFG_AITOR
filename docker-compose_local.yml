@@ -5,8 +5,6 @@ services:
   backend_spring:
      #build: ./webchat_agc  
      image: dashshot/webchat_agc:latest
-     ports:
-      - "443:8443"   
      environment:
         - DATABASE_URL=mongodb://databaseUSER:databasePAS@tfgclusternossl.cluster-cnk2muikun1e.eu-west-3.docdb.amazonaws.com:27017
         - DATABASE_NAME=chat_db
@@ -17,9 +15,9 @@ services:
        # #-jwt.secret=your_secret_key_here
   #   depends_on:
   #     - mongodb
-#   #     - rabbitmq
-#      deploy:
-#        replicas: 2
+  #     - rabbitmq
+     deploy:
+       replicas: 2
 
   # frontend_angular:
   #   container_name: frontend_angular
@@ -76,14 +74,14 @@ services:
   #   entrypoint: >
   # #     sh -c "rabbitmq-plugins enable --offline rabbitmq_web_stomp && rabbitmq-server"
 
-  # haproxy:
-  #   image: haproxy:2.4
-  #   container_name: haproxy
-  #   ports:
-  #     - "80:80"  
-  #     - "443:443"        # Puerto HTTPS
-  #   volumes:
-  #     - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-  #     - ./an-front/ssl/fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
-  #   depends_on:
-  #     - backend_spring
+  haproxy:
+    image: haproxy:2.4
+    container_name: haproxy
+    ports:
+      - "80:80"  
+      - "443:443"        # Puerto HTTPS
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./an-front/ssl/fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
+    depends_on:
+      - backend_spring

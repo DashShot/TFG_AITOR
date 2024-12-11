@@ -69,7 +69,7 @@ public class SecurityConfig{
         .authorizeHttpRequests(authorize -> authorize
                 // PRIVATE ENDPOINTS
                 .requestMatchers(HttpMethod.POST, "/api/auth/**", "/error").permitAll()
-                .requestMatchers(HttpMethod.GET, "/error").permitAll()
+                .requestMatchers(HttpMethod.GET, "/error", "/api/**").permitAll()
 
                 // Protected endpoints
                 .requestMatchers("/api/socket/**").permitAll() // Proteger WebSocket
