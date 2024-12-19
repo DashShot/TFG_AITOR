@@ -2,12 +2,12 @@
   <p></p>
 
   <div>
-    <button type="button" class="list-button" (click)="getListRooms()">Ver Rooms</button>
+    <button type="button" class="list-button" id="list-button" (click)="getListRooms()">Ver Rooms</button>
   </div>
 
   <div>
     @for (room of rooms; track $index) {
-      <button type="button" class="room-button" [routerLink]="['/room', room.room]">
+      <button type="button" class="room-button" id="room-button" [routerLink]="['/room', room.room]">
         {{ room.room }}: {{ room.status }}
       </button>
     }

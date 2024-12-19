@@ -43,25 +43,35 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
-        // Configura el cliente TCP con Reactor Netty para Amazon MQ
-        ReactorNettyTcpClient<byte[]> tcpClient = new ReactorNettyTcpClient<>(builder -> builder
-        .host(amazonMQProperties.getRelayHost())  // Host del broker de Amazon MQ
-        .port(amazonMQProperties.getRelayPort())  // Puerto del broker
-        .secure(SslProvider.defaultClientProvider())  // Configuración SSL
-        , new StompReactorNettyCodec());  // Código de codificación de STOMP
+        // // Configura el cliente TCP con Reactor Netty para Amazon MQ
+        // ReactorNettyTcpClient<byte[]> tcpClient = new ReactorNettyTcpClient<>(builder -> builder
+        // .host(amazonMQProperties.getRelayHost())  // Host del broker de Amazon MQ
+        // .port(amazonMQProperties.getRelayPort())  // Puerto del broker
+        // .secure(SslProvider.defaultClientProvider())  // Configuración SSL
+        // , new StompReactorNettyCodec());  // Código de codificación de STOMP
 
-        // Configuración del Message Broker para STOMP
-        registry.setApplicationDestinationPrefixes("/app"); // Prefijo para los destinos de la aplicación
-        registry.enableStompBrokerRelay("/queue", "/topic")  // Prefijos para el broker
-            .setUserDestinationBroadcast("/topic/unresolved.user.dest")
-            .setUserRegistryBroadcast("/topic/registry.broadcast")
-            .setAutoStartup(true)
-            .setSystemLogin(amazonMQProperties.getUser()) // Usuario del sistema
-            .setSystemPasscode(amazonMQProperties.getPassword()) // Contraseña del sistema
-            .setClientLogin(amazonMQProperties.getUser()) // Usuario del cliente
-            .setClientPasscode(amazonMQProperties.getPassword()) // Contraseña del cliente
-            .setTcpClient(tcpClient); // Configuración del cliente TCP
+        // // Configuración del Message Broker para STOMP
+        // registry.setApplicationDestinationPrefixes("/app"); // Prefijo para los destinos de la aplicación
+        // registry.enableStompBrokerRelay("/queue", "/topic")  // Prefijos para el broker
+        //     .setUserDestinationBroadcast("/topic/unresolved.user.dest")
+        //     .setUserRegistryBroadcast("/topic/registry.broadcast")
+        //     .setAutoStartup(true)
+        //     .setSystemLogin(amazonMQProperties.getUser()) // Usuario del sistema
+        //     .setSystemPasscode(amazonMQProperties.getPassword()) // Contraseña del sistema
+        //     .setClientLogin(amazonMQProperties.getUser()) // Usuario del cliente
+        //     .setClientPasscode(amazonMQProperties.getPassword()) // Contraseña del cliente
+        //     .setTcpClient(tcpClient); // Configuración del cliente TCP
 
+        // EJECUCIÓN LOCAL
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableStompBrokerRelay("/queue", "/topic")
+                .setUserDestinationBroadcast("/topic/unresolved.user.dest")
+                .setUserRegistryBroadcast("/topic/registry.broadcast")
+                .setRelayHost("rabbitmq")
+                .setRelayPort(61613)
+                .setClientLogin("guest")
+                .setClientPasscode("guest");
+                
     }
 
     @Override

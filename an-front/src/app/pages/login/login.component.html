@@ -1,3 +1,4 @@
+<body>
 @if(isLoginView){
     <div class="page-content">
       <div class="form-v5-content">
@@ -16,9 +17,9 @@
             <i class="fas fa-lock"></i>
           </div>
           <div class="form-row-last">
-            <input type="submit" name="login" class="login" value="Login" (click)="login()">
+            <input type="submit" name="login" id="login-submit" class="login" value="Login" (click)="login()">
           </div>
-          <p> Dont have an account?  <a href="#!" class="link-info" (click)="isLoginView = false"> Register here </a>
+          <p> Dont have an account?  <a href="#!" id="register-link" class="link-info" (click)="isLoginView = false"> Register here </a>
         </form>
       </div>
     </div>
@@ -40,10 +41,11 @@
             <i class="fas fa-lock"></i>
           </div>
           <div class="form-row-last">
-            <input type="submit" (click)="register()" name="register" class="register" value="Register">
+            <input id="register-submit" type="submit" (click)="register()" name="register" class="register" value="Register">
           </div>
-          <p> Do you have an account  <a href="#!"  class="link-info" (click)="isLoginView = true"> Login here </a>
+          <p> Do you have an account  <a href="#!" id="login-link" class="link-info" (click)="isLoginView = true"> Login here </a>
         </form>
       </div>
     </div>
   }
+</body>

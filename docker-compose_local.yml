@@ -2,7 +2,7 @@ services:
   
   backend_spring:
      #build: ./webchat_agc  
-     image: dashshot/webchat_agc:local
+     image: dashshot/webchat_agc:Local_Test
      environment:
         - DATABASE_URL=mongodb://root:password@mongodb:27017/?authSource=admin
         - DATABASE_NAME=chat_db
@@ -12,7 +12,7 @@ services:
       - rabbitmq
      deploy:
       replicas: 2
-    
+
   mongodb:
     image: mongo:5.0
     container_name: mongo

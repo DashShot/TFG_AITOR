@@ -5,10 +5,10 @@
     </div>
 
     @for (msg of msgList; track $index) {
-        <li class="message-list" >{{msg}}</li>
+        <li id="message-list" class="message-list" >{{msg}}</li>
     }
 
-    <div class="message-area">
+    <div id="message-area" class="message-area">
         <ul class="message-list">
             @for (msg of messagesSesion; track messagesSesion.indexOf) {
                 @if (msg.message_room == currentRoom) {
@@ -37,33 +37,22 @@
                                 {{msg.message_content}} 
                                 <span class="message-meta">[From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
                             </li>
-
-                        <!-- }@else if(msg.message_type == 'img') {
-                            <li class="message-server"> 
-                                <img class="message-img" [src]="msg.message_content" alt="File Image" /> 
-                                <span class="message-meta"> [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
-                            </li>
-                        } @else if (msg.message_type == 'txt') {
-                            <li class="message-txt-server">
-                                [From {{msg.message_username}}]
-                                <a [href]="msg.message_content" download="message.txt">Descargar archivo de texto</a>
-                                <span class="message-meta">[{{msg.message_room}} / {{msg.message_timeStamp}}]</span>
-                            </li> -->
+                        
                         }
                     <!-- El mensaje es enviado por otro usuario -->
                     } @else {
                         @if (msg.message_type == 'chatMessage'){
-                            <li class="message-others">
+                            <li id="message-others" class="message-others">
                                 <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
                                 {{msg.message_content}}     
                             </li>
                         }@else if(msg.message_type == 'img') {
-                            <li class="message-others">     
+                            <li id="message-others" class="message-others">     
                                 <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
                                 <img class="message-img" [src]="msg.message_content" alt="File Image" />
                             </li>      
                         } @else if (msg.message_type == 'txt') {
-                            <li class="message-others">    
+                            <li class="message-others" id="message-others">    
                                 <span class="message-meta">  [From {{msg.message_username}} / {{msg.message_room}} / {{msg.message_timeStamp}}]</span>
                                 <a class="message-txt-others" [href]="msg.message_content" download="message.txt">Archivo de texto</a>
                             </li>
@@ -81,8 +70,8 @@
         </div>
       
         <div class="form-message">
-          <input [(ngModel)]="messageObj.content" type="text" name="content" placeholder="Escribe tu mensaje aquí">
-          <button type="submit" (click)="sendMessage()" class="submit-button">Enviar Mensaje</button>
+          <input id="input-message" [(ngModel)]="messageObj.content" type="text" name="content" placeholder="Escribe tu mensaje aquí">
+          <button id="submit-message" type="submit" (click)="sendMessage()" class="submit-button">Enviar Mensaje</button>
         </div>
       
         <div class="form-file">
