@@ -1,3 +1,5 @@
+name: compose_local_TFG
+
 services:
   
   backend_spring:
