@@ -66,6 +66,6 @@ services:
       - "443:443"        # Puerto HTTPS
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - ./an-front/ssl/fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
+      - ./fullchain.pem:/usr/local/etc/haproxy/certs/fullchain.pem:ro
     depends_on:
       - backend_spring
