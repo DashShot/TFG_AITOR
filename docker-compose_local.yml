@@ -2,7 +2,7 @@ services:
   
   backend_spring:
      #build: ./webchat_agc  
-     image: dashshot/webchat_agc:Local_Test
+     image: dashshot/webchat_agc:Local
      environment:
         - DATABASE_URL=mongodb://root:password@mongodb:27017/?authSource=admin
         - DATABASE_NAME=chat_db
