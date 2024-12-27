@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Configuración
-DOCKER_USERNAME="dashshot" # Cambia esto por tu nombre de usuario en Docker Hub
-DOCKER_REPO="webchat_agc"  # Cambia esto por el nombre de tu repositorio en Docker Hub
-IMAGE_TAG="Local_Test"  # Puedes cambiar "latest" por otro tag si lo necesitas
+DOCKER_USERNAME="dashshot" 
+DOCKER_REPO="webchat_agc"  
+IMAGE_TAG="Local"  
 IMAGE_NAME="$DOCKER_USERNAME/$DOCKER_REPO:$IMAGE_TAG"
 
 # Paso 1: Construir la imagen Docker
