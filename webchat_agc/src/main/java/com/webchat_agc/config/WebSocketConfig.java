@@ -63,6 +63,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //     .setTcpClient(tcpClient); // Configuración del cliente TCP
 
         // EJECUCIÓN LOCAL
+
         registry.setApplicationDestinationPrefixes("/app");
         registry.enableStompBrokerRelay("/queue", "/topic")
                 .setUserDestinationBroadcast("/topic/unresolved.user.dest")
@@ -71,7 +72,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setRelayPort(61613)
                 .setClientLogin("guest")
                 .setClientPasscode("guest");
-                
+             
     }
 
     @Override

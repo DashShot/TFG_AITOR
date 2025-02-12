@@ -3,7 +3,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   //  SI LA ACTUAL IMPLEMENTACIÓN NO REQUIERE  DE  JWT  TOKEN  BORRAR
-  //const token = localStorage.getItem('TokenData');
+  const token = localStorage.getItem('AuthCookie');
 
   // const cookieService = inject(CookieService)
   // const xsrf = cookieService.get("X-XSRF-TOKEN");
@@ -13,7 +13,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     const cloneReq = req.clone({
       setHeaders:{
         'Content-Type': 'application/json',
-       // 'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
         //'X-XSRF-TOKEN': xsrf,
         //'Access-Control-Allow-Credentials': 'true'
       },
